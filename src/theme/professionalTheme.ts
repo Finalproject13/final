@@ -872,6 +872,591 @@ table td {
   }
 }
 
+
+
+/* Project by Tirta — FINAL EMPLOYEE / ACTION UI SYSTEM */
+
+/* =========================================================
+   GLOBAL LAYERING
+   ========================================================= */
+.app-root,
+.talenta-shell,
+.employee-portal-cosmic,
+.employee-page {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+.talenta-shell,
+.talenta-main,
+.employee-portal-cosmic,
+.employee-page {
+  min-height: 100vh !important;
+  background: transparent !important;
+}
+
+.talenta-shell::before,
+.employee-portal-cosmic::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -2 !important;
+  pointer-events: none !important;
+  transition: opacity .35s ease, background .35s ease !important;
+}
+
+.talenta-shell::after,
+.employee-portal-cosmic::after {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  opacity: .72 !important;
+}
+
+/* =========================================================
+   FIVE REAL COSMIC ATMOSPHERES — not just accent colors
+   ========================================================= */
+html[data-cosmic-theme="sun"] .talenta-shell::before,
+html[data-cosmic-theme="sun"] .employee-portal-cosmic::before {
+  background:
+    radial-gradient(circle at 82% 11%, rgba(255,208,112,.24) 0 4%, rgba(255,145,54,.09) 10%, transparent 24%),
+    radial-gradient(circle at 13% 72%, rgba(255,104,39,.15), transparent 24%),
+    linear-gradient(180deg,#17100b 0%,#07101d 58%,#020509 100%) !important;
+}
+html[data-cosmic-theme="sun"] .talenta-shell::after,
+html[data-cosmic-theme="sun"] .employee-portal-cosmic::after {
+  background:
+    conic-gradient(from 125deg at 84% 12%, transparent 0 25%, rgba(255,198,91,.16) 31%, transparent 39% 100%),
+    radial-gradient(circle at 24% 19%, rgba(255,255,255,.42) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 68% 37%, rgba(255,217,145,.35) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 86% 74%, rgba(255,166,85,.28) 0 1px, transparent 1.8px);
+  animation: pt-sun-ambient 12s ease-in-out infinite alternate !important;
+}
+
+html[data-cosmic-theme="moon"] .talenta-shell::before,
+html[data-cosmic-theme="moon"] .employee-portal-cosmic::before {
+  background:
+    radial-gradient(circle at 78% 14%, rgba(234,243,255,.18), transparent 17%),
+    radial-gradient(circle at 17% 68%, rgba(92,145,220,.12), transparent 25%),
+    linear-gradient(180deg,#061326 0%,#040a15 62%,#01040a 100%) !important;
+}
+html[data-cosmic-theme="moon"] .talenta-shell::after,
+html[data-cosmic-theme="moon"] .employee-portal-cosmic::after {
+  background:
+    radial-gradient(circle at 78% 14%, rgba(250,252,255,.48) 0 2%, rgba(182,214,249,.11) 4%, transparent 10%),
+    radial-gradient(circle at 10% 19%, rgba(255,255,255,.42) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 29% 54%, rgba(255,255,255,.32) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 72% 72%, rgba(255,255,255,.30) 0 1px, transparent 1.7px);
+  animation: pt-moon-ambient 17s ease-in-out infinite alternate !important;
+}
+
+html[data-cosmic-theme="galaxy"] .talenta-shell::before,
+html[data-cosmic-theme="galaxy"] .employee-portal-cosmic::before {
+  background:
+    radial-gradient(ellipse at 68% 20%, rgba(175,111,255,.26), transparent 24%),
+    radial-gradient(ellipse at 25% 70%, rgba(80,145,255,.20), transparent 28%),
+    radial-gradient(ellipse at 52% 44%, rgba(244,107,255,.08), transparent 31%),
+    linear-gradient(180deg,#110a26 0%,#050310 66%,#020107 100%) !important;
+}
+html[data-cosmic-theme="galaxy"] .talenta-shell::after,
+html[data-cosmic-theme="galaxy"] .employee-portal-cosmic::after {
+  background:
+    linear-gradient(150deg, transparent 33%, rgba(209,159,255,.10) 45%, transparent 57%),
+    radial-gradient(circle at 10% 25%, rgba(255,255,255,.46) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 37% 16%, rgba(255,255,255,.42) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 77% 31%, rgba(255,255,255,.48) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 88% 78%, rgba(255,255,255,.36) 0 1px, transparent 1.7px);
+  filter: blur(1px) !important;
+  animation: pt-galaxy-ambient 18s ease-in-out infinite alternate !important;
+}
+
+html[data-cosmic-theme="blackhole"] .talenta-shell::before,
+html[data-cosmic-theme="blackhole"] .employee-portal-cosmic::before {
+  background:
+    radial-gradient(ellipse at 72% 20%, #000 0 5%, transparent 5.8% 11%, rgba(232,195,111,.19) 12% 13%, rgba(99,215,255,.16) 14% 15%, transparent 21%),
+    radial-gradient(circle at 72% 20%, rgba(99,215,255,.12), transparent 19%),
+    linear-gradient(180deg,#06080d 0%,#020306 68%,#010204 100%) !important;
+}
+html[data-cosmic-theme="blackhole"] .talenta-shell::after,
+html[data-cosmic-theme="blackhole"] .employee-portal-cosmic::after {
+  background:
+    conic-gradient(from 18deg at 72% 20%, transparent 0 25%, rgba(232,195,111,.14) 31%, rgba(99,215,255,.12) 38%, transparent 47% 100%),
+    radial-gradient(circle at 16% 27%, rgba(255,255,255,.38) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 57% 13%, rgba(255,255,255,.32) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 86% 67%, rgba(255,255,255,.34) 0 1px, transparent 1.7px);
+  animation: pt-blackhole-ambient 10s linear infinite !important;
+}
+
+html[data-cosmic-theme="nebula"] .talenta-shell::before,
+html[data-cosmic-theme="nebula"] .employee-portal-cosmic::before {
+  background:
+    radial-gradient(ellipse at 69% 19%, rgba(255,135,214,.24), transparent 23%),
+    radial-gradient(ellipse at 24% 65%, rgba(92,195,255,.18), transparent 28%),
+    radial-gradient(ellipse at 81% 72%, rgba(182,94,255,.14), transparent 25%),
+    linear-gradient(180deg,#180918 0%,#060510 68%,#02040a 100%) !important;
+}
+html[data-cosmic-theme="nebula"] .talenta-shell::after,
+html[data-cosmic-theme="nebula"] .employee-portal-cosmic::after {
+  background:
+    radial-gradient(circle at 14% 25%, rgba(255,255,255,.40) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 33% 14%, rgba(255,255,255,.34) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 58% 36%, rgba(255,255,255,.38) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 87% 55%, rgba(255,255,255,.32) 0 1px, transparent 1.7px);
+  filter: blur(1px) !important;
+  animation: pt-nebula-ambient 15s ease-in-out infinite alternate !important;
+}
+
+@keyframes pt-sun-ambient { from { transform:scale(1) translate3d(-.3%,0,0); opacity:.55; } to { transform:scale(1.05) translate3d(.5%,-.8%,0); opacity:.9; } }
+@keyframes pt-moon-ambient { from { transform:translate3d(-.5%,0,0); opacity:.45; } to { transform:translate3d(.8%,-1%,0); opacity:.9; } }
+@keyframes pt-galaxy-ambient { from { transform:translate3d(-.8%,.5%,0) scale(1); } to { transform:translate3d(1%,-.8%,0) scale(1.05); } }
+@keyframes pt-blackhole-ambient { to { transform:rotate(360deg) scale(1.015); } }
+@keyframes pt-nebula-ambient { from { transform:translate3d(-.8%,.8%,0) scale(1); } to { transform:translate3d(1%,-1%,0) scale(1.06); } }
+
+/* =========================================================
+   ADMIN TABLE ACTION BUTTONS — no white pills
+   ========================================================= */
+.row-actions {
+  align-items: center !important;
+  gap: 7px !important;
+  flex-wrap: wrap !important;
+}
+.row-actions > button,
+.row-actions > .link-btn,
+.row-actions > .danger-text {
+  min-height: 34px !important;
+  min-width: 60px !important;
+  padding: 0 11px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(214,174,88,.52) !important;
+  background: rgba(7,16,30,.90) !important;
+  color: #edf3fb !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,.24) !important;
+  text-decoration: none !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+}
+.row-actions > .link-btn:hover,
+.row-actions > .link-btn:focus-visible {
+  background: rgba(26,43,72,.98) !important;
+  color: #fff !important;
+  border-color: var(--pt-accent) !important;
+}
+.row-actions > .danger-text {
+  background: rgba(65,13,28,.90) !important;
+  color: #ffc1cc !important;
+  border-color: rgba(255,113,135,.46) !important;
+}
+.row-actions > .danger-text:hover,
+.row-actions > .danger-text:focus-visible {
+  background: rgba(98,17,39,.98) !important;
+  color: #ffecef !important;
+  border-color: #ff7187 !important;
+}
+
+/* =========================================================
+   EMPLOYEE PORTAL — PROFESSIONAL HR EXPERIENCE
+   ========================================================= */
+.employee-topbar {
+  min-height: 70px !important;
+  padding: 0 28px !important;
+  background: rgba(4,9,18,.88) !important;
+  border-bottom: 1px solid rgba(214,174,88,.22) !important;
+  box-shadow: 0 12px 40px rgba(0,0,0,.22) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+}
+.employee-brand strong { color: #f7f9fc !important; letter-spacing: -.02em !important; }
+.employee-brand small { color: #93a2b7 !important; }
+.employee-user b { color: #f3f7fb !important; }
+.employee-user small { color: #8f9eb2 !important; }
+.portal-logout {
+  min-height: 34px !important;
+  padding: 0 12px !important;
+  border-radius: 10px !important;
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(214,174,88,.44) !important;
+  color: #eef3fb !important;
+}
+.portal-logout:hover { background: rgba(214,174,88,.12) !important; color: #fff6da !important; }
+
+.employee-page {
+  width: min(1440px, calc(100% - 48px)) !important;
+  margin: 0 auto !important;
+  padding: 30px 0 72px !important;
+}
+.employee-heading {
+  margin-bottom: 18px !important;
+  padding: 8px 2px 4px !important;
+}
+.employee-heading h1 {
+  margin: 4px 0 8px !important;
+  font-size: clamp(28px, 4vw, 42px) !important;
+  color: #fff !important;
+  letter-spacing: -.04em !important;
+}
+.employee-heading p { color: #9aa8bb !important; max-width: 760px; line-height: 1.65 !important; }
+.date-chip {
+  padding: 10px 13px !important;
+  border-radius: 12px !important;
+  background: rgba(7,16,30,.66) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  color: #bdc7d5 !important;
+}
+
+.employee-tabs {
+  display: flex !important;
+  gap: 5px !important;
+  padding: 6px !important;
+  margin-bottom: 16px !important;
+  border-radius: 16px !important;
+  background: rgba(5,12,24,.74) !important;
+  border: 1px solid rgba(255,255,255,.08) !important;
+  box-shadow: 0 14px 38px rgba(0,0,0,.18) !important;
+  overflow-x: auto !important;
+  scrollbar-width: thin;
+}
+.employee-tabs button {
+  flex: 0 0 auto !important;
+  min-height: 38px !important;
+  padding: 0 13px !important;
+  border-radius: 11px !important;
+  background: transparent !important;
+  color: #9eabbd !important;
+  border: 1px solid transparent !important;
+  font-size: 11px !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+}
+.employee-tabs button:hover { color: #fff !important; background: rgba(255,255,255,.035) !important; }
+.employee-tabs button.active {
+  color: #07111f !important;
+  background: linear-gradient(135deg,var(--pt-accent),#fff0c7) !important;
+  border-color: var(--pt-accent) !important;
+  box-shadow: 0 7px 22px color-mix(in srgb,var(--pt-accent) 18%,transparent) !important;
+}
+
+/* KPI strip */
+.ess-kpis {
+  display: grid !important;
+  grid-template-columns: repeat(3,minmax(0,1fr)) !important;
+  gap: 14px !important;
+  margin-bottom: 14px !important;
+}
+.ess-kpi {
+  min-height: 126px !important;
+  padding: 19px !important;
+  border-radius: 18px !important;
+  background: linear-gradient(145deg,rgba(14,27,48,.90),rgba(5,12,24,.80)) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  box-shadow: 0 18px 55px rgba(0,0,0,.25) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.ess-kpi::after {
+  content:"";
+  position:absolute;
+  inset:auto -30px -55px auto;
+  width:170px;height:170px;border-radius:50%;
+  background:radial-gradient(circle,color-mix(in srgb,var(--pt-accent) 15%,transparent),transparent 68%);
+  pointer-events:none;
+}
+.ess-kpi small,.ess-kpi span { color:#8796ab !important; }
+.ess-kpi strong { color:#fff !important; font-size:28px !important; letter-spacing:-.03em !important; }
+
+/* Shared portal card */
+.employee-portal-cosmic .portal-card {
+  position: relative !important;
+  overflow: hidden !important;
+  color: #e9eef6 !important;
+  background: linear-gradient(145deg,rgba(13,25,44,.91),rgba(5,12,24,.82)) !important;
+  border: 1px solid rgba(255,255,255,.075) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 65px rgba(0,0,0,.28), 0 0 26px color-mix(in srgb,var(--pt-accent) 5%,transparent) !important;
+  backdrop-filter: blur(20px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(145%) !important;
+}
+.employee-portal-cosmic .portal-card::before {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:radial-gradient(circle at 92% 0%,color-mix(in srgb,var(--pt-accent) 10%,transparent),transparent 26%);
+}
+.employee-portal-cosmic .card-title h2,
+.employee-portal-cosmic .portal-card h2,
+.employee-portal-cosmic .portal-card h3 { color:#f7f9fc !important; }
+.employee-portal-cosmic .card-title p,
+.employee-portal-cosmic .muted { color:#8997ab !important; }
+.employee-portal-cosmic .card-kicker,.employee-portal-cosmic .portal-eyebrow { color:var(--pt-accent) !important; }
+
+/* Notices */
+.employee-portal-cosmic .portal-info,
+.employee-portal-cosmic .portal-error {
+  margin: 12px 0 16px !important;
+  padding: 13px 15px !important;
+  border-radius: 14px !important;
+  background: rgba(7,16,30,.78) !important;
+  box-shadow: 0 14px 34px rgba(0,0,0,.2) !important;
+}
+.employee-portal-cosmic .portal-info { border-color: rgba(91,232,184,.24) !important; color:#a7edd4 !important; }
+.employee-portal-cosmic .portal-error { border-color: rgba(255,113,135,.26) !important; color:#ffb8c2 !important; }
+
+/* Attendance section */
+.attendance-grid { gap: 14px !important; }
+.attendance-card { padding: 20px !important; }
+.attendance-meta > div,
+.security-box,
+.info-list > div,
+.balance-list > div,
+.request-list > div,
+.schedule-item,
+.salary-lines > div {
+  background: rgba(255,255,255,.025) !important;
+  border: 1px solid rgba(255,255,255,.055) !important;
+  border-radius: 13px !important;
+}
+.attendance-meta > div { padding: 13px !important; }
+.security-box { padding: 13px !important; color:#d9e2ee !important; }
+.security-box p { color:#8d9bb0 !important; }
+.portal-status-badge,
+.status-badge {
+  border-radius: 999px !important;
+  background: rgba(214,174,88,.08) !important;
+  border: 1px solid rgba(214,174,88,.22) !important;
+  color:#e7cc91 !important;
+  padding: 5px 9px !important;
+}
+
+/* Shared controls */
+.employee-portal-cosmic .employee-form input,
+.employee-portal-cosmic .employee-form select,
+.employee-portal-cosmic .employee-form textarea,
+.employee-portal-cosmic .form-two input,
+.employee-portal-cosmic input,
+.employee-portal-cosmic select,
+.employee-portal-cosmic textarea {
+  background: rgba(6,14,27,.80) !important;
+  color:#eef4fd !important;
+  border:1px solid rgba(141,171,226,.18) !important;
+  border-radius: 12px !important;
+}
+.employee-portal-cosmic input:focus,
+.employee-portal-cosmic select:focus,
+.employee-portal-cosmic textarea:focus {
+  border-color:var(--pt-accent) !important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--pt-accent) 12%,transparent) !important;
+}
+.employee-portal-cosmic .portal-primary,
+.employee-portal-cosmic .portal-secondary {
+  min-height: 42px !important;
+  border-radius: 12px !important;
+  font-weight: 800 !important;
+}
+.employee-portal-cosmic .portal-primary {
+  background: linear-gradient(135deg,var(--pt-accent),#fff0c7) !important;
+  color:#08111d !important;
+  border:1px solid var(--pt-accent) !important;
+  box-shadow:0 9px 24px color-mix(in srgb,var(--pt-accent) 14%,transparent) !important;
+}
+.employee-portal-cosmic .portal-secondary {
+  background: rgba(255,255,255,.045) !important;
+  color:#edf3fb !important;
+  border:1px solid rgba(214,174,88,.34) !important;
+}
+.employee-portal-cosmic .portal-secondary:hover { background:rgba(214,174,88,.10) !important; border-color:var(--pt-accent) !important; }
+
+/* =========================================================
+   ANNOUNCEMENTS — polished, hierarchy, unread state
+   ========================================================= */
+.employee-announcement-center {
+  padding: 0 !important;
+}
+.employee-announcement-head {
+  display:flex !important;
+  align-items:flex-end !important;
+  justify-content:space-between !important;
+  gap:14px !important;
+  margin-bottom:14px !important;
+  padding:4px 2px 0 !important;
+}
+.employee-announcement-title h2 {
+  margin:5px 0 3px !important;
+  color:#fff !important;
+  font-size:26px !important;
+  letter-spacing:-.03em !important;
+}
+.employee-announcement-head p { margin:0 !important; color:#8f9db1 !important; }
+.employee-announcement-list {
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:14px !important;
+}
+.employee-announcement-item {
+  position:relative !important;
+  overflow:hidden !important;
+  padding:18px !important;
+  min-height:200px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  background:linear-gradient(145deg,rgba(13,25,44,.93),rgba(5,12,24,.83)) !important;
+  border:1px solid rgba(255,255,255,.07) !important;
+  border-radius:18px !important;
+  box-shadow:0 18px 55px rgba(0,0,0,.24) !important;
+}
+.employee-announcement-item.is-unread {
+  border-color:color-mix(in srgb,var(--pt-accent) 44%,rgba(255,255,255,.10)) !important;
+  box-shadow:0 18px 58px rgba(0,0,0,.27),0 0 24px color-mix(in srgb,var(--pt-accent) 7%,transparent) !important;
+}
+.employee-announcement-item.is-unread::before {
+  content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--pt-accent),transparent) !important;
+}
+.employee-announcement-item-title {
+  display:flex !important;
+  align-items:flex-start !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+}
+.employee-announcement-item-title strong:last-child {
+  flex:1 !important;
+  color:#f5f8fc !important;
+  font-size:16px !important;
+  line-height:1.35 !important;
+}
+.employee-announcement-meta {
+  display:block !important;
+  margin-top:9px !important;
+  color:#8492a7 !important;
+  font-size:10px !important;
+  text-transform:uppercase !important;
+  letter-spacing:.06em !important;
+}
+.employee-announcement-body {
+  margin:14px 0 16px !important;
+  color:#bac5d4 !important;
+  line-height:1.7 !important;
+  flex:1 !important;
+  white-space:pre-line !important;
+}
+.employee-announcement-read {
+  align-self:flex-start !important;
+  min-height:34px !important;
+  padding:0 11px !important;
+  border-radius:10px !important;
+  background:rgba(255,255,255,.04) !important;
+  border:1px solid rgba(214,174,88,.34) !important;
+  color:#e7cc91 !important;
+  font-size:10px !important;
+  font-weight:800 !important;
+}
+.employee-announcement-read:hover:not(:disabled) {
+  background:rgba(214,174,88,.10) !important;
+  border-color:var(--pt-accent) !important;
+  color:#fff3c7 !important;
+}
+.employee-announcement-read:disabled {
+  opacity:.72 !important;
+  cursor:default !important;
+}
+
+/* =========================================================
+   SUGGESTION BOX — professional HR case intake
+   ========================================================= */
+.suggestion-box {
+  padding:20px !important;
+}
+.suggestion-header {
+  display:flex !important;
+  justify-content:space-between !important;
+  align-items:flex-start !important;
+  gap:14px !important;
+  padding-bottom:14px !important;
+  margin-bottom:4px !important;
+  border-bottom:1px solid rgba(255,255,255,.055) !important;
+}
+.suggestion-header h2 { margin:5px 0 5px !important; color:#fff !important; }
+.suggestion-header p { color:#929fb2 !important; line-height:1.6 !important; }
+.suggestion-security {
+  flex:0 0 auto !important;
+  padding:6px 9px !important;
+  border-radius:999px !important;
+  background:rgba(73,214,161,.06) !important;
+  border:1px solid rgba(73,214,161,.20) !important;
+  color:#9be7c9 !important;
+  font-size:10px !important;
+  font-weight:800 !important;
+}
+.suggestion-form-grid { gap:12px !important; }
+.suggestion-footer {
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:12px !important;
+  margin-top:10px !important;
+  padding-top:14px !important;
+  border-top:1px solid rgba(255,255,255,.055) !important;
+}
+.suggestion-footer small { color:#7f8da2 !important; line-height:1.5 !important; max-width:70%; }
+.suggestion-success { min-height:300px !important; display:flex !important; flex-direction:column !important; justify-content:center !important; }
+.suggestion-success-icon {
+  width:52px;height:52px;display:grid;place-items:center;border-radius:16px;
+  background:rgba(73,214,161,.08) !important;
+  border:1px solid rgba(73,214,161,.24) !important;
+  color:#78e3bc !important;
+  font-size:24px !important;
+  margin-bottom:12px;
+}
+
+/* Feedback history */
+.request-list > div,
+.request-list > div > div { min-width:0 !important; }
+.request-list > div { padding:12px !important; margin-bottom:7px !important; }
+.request-list > div b { color:#f3f7fb !important; }
+.request-list > div small { color:#8998ad !important; }
+
+/* Empty states */
+.empty-state,
+.employee-portal-cosmic .empty-state {
+  min-height:180px !important;
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:center !important;
+  justify-content:center !important;
+  text-align:center !important;
+  color:#9aa7ba !important;
+}
+.empty-state h2 { color:#eef3f9 !important; }
+.empty-state p { color:#8190a5 !important; max-width:560px; line-height:1.6 !important; }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 980px) {
+  .employee-page { width: min(100% - 28px, 900px) !important; }
+  .ess-kpis { grid-template-columns:1fr !important; }
+  .employee-announcement-list { grid-template-columns:1fr !important; }
+}
+@media (max-width: 680px) {
+  .employee-topbar { min-height:62px !important; padding:0 12px !important; }
+  .employee-page { width:calc(100% - 22px) !important; padding:20px 0 80px !important; }
+  .employee-heading { align-items:flex-start !important; flex-direction:column !important; }
+  .employee-heading h1 { font-size:28px !important; }
+  .employee-tabs { border-radius:14px !important; }
+  .attendance-grid,.portal-grid,.payslip-grid { gap:11px !important; }
+  .employee-announcement-item { min-height:0 !important; padding:16px !important; }
+  .suggestion-header,.suggestion-footer { flex-direction:column !important; align-items:flex-start !important; }
+  .suggestion-footer small { max-width:100% !important; }
+  .suggestion-footer .portal-primary { width:100% !important; }
+  .row-actions > button,
+  .row-actions > .link-btn,
+  .row-actions > .danger-text { min-width:52px !important; min-height:30px !important; padding-inline:8px !important; font-size:9px !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .talenta-shell::after,
+  .employee-portal-cosmic::after,
+  .ess-kpi::after { animation:none !important; }
+}
+
 `;
 
 export const COSMIC_THEMES = {

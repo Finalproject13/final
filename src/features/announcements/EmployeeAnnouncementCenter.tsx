@@ -26,24 +26,24 @@ export default function EmployeeAnnouncementCenter({
   const unread = announcements.filter(a => !a.isRead).length;
 
   return (
-    <section aria-label={t('announcement_center')}>
-      <header>
-        <h2>📢 {t('announcements')}</h2>
+    <section className="employee-announcement-center" aria-label={t('announcement_center')}>
+      <header className="employee-announcement-head">
+        <div className="employee-announcement-title"><span className="card-kicker">{t('announcement_center')}</span><h2>📢 {t('announcements')}</h2></div>
         <p>{unread > 0 ? t('announcement_unread').replace('{count}', String(unread)) : t('announcement_all_read')}</p>
       </header>
       {announcements.length === 0 ? <p>{t('announcement_none')}</p> : (
-        <div style={{ display: 'grid', gap: 12 }}>
+        <div className="employee-announcement-list">
           {announcements.map((a) => (
-            <article key={a.id} aria-label={a.title}>
-              <div>
+            <article className={`employee-announcement-item ${a.isRead ? 'is-read' : 'is-unread'}`} key={a.id} aria-label={a.title}>
+              <div className="employee-announcement-item-title">
                 {a.pinned && <strong>📌 {t('announcement_pinned')} </strong>}
                 <strong>{a.title}</strong>
               </div>
-              <small>
+              <small className="employee-announcement-meta">
                 {t(categoryKeys[a.category])} · {t(priorityKeys[a.priority])} · {a.publishedAt || ''}
               </small>
-              <p>{a.body}</p>
-              <button type="button" disabled={!!a.isRead} onClick={() => onRead?.(a.id)}>
+              <p className="employee-announcement-body">{a.body}</p>
+              <button className="employee-announcement-read" type="button" disabled={!!a.isRead} onClick={() => onRead?.(a.id)}>
                 {a.isRead ? t('announcement_already_read') : t('announcement_mark_read')}
               </button>
             </article>

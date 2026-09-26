@@ -1001,6 +1001,12 @@ export default function DashboardAdmin() {
       payload.id_karyawan = nextId;
     }
 
+    // Kolom DATE PostgreSQL tidak menerima string kosong.
+    // Field tanggal yang dikosongkan dari form dikirim sebagai NULL.
+    for (const key of ['tanggal_lahir', 'tanggal_masuk']) {
+      if (payload[key] === '') payload[key] = null;
+    }
+
     const { error: e } = await supabase
       .from('karyawan')
       .update(payload)
@@ -1806,6 +1812,8 @@ function AddEmployee({onDone,refresh}:{onDone:()=>void;refresh:()=>void}) {
 
     const payload={
       ...f,
+      tanggal_lahir: f.tanggal_lahir || null,
+      tanggal_masuk: f.tanggal_masuk || null,
       gaji_pokok:Number(f.gaji_pokok||0),
       status_aktif:true
     };
