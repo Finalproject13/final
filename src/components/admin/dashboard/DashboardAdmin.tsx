@@ -82,7 +82,7 @@ interface Absensi {
 }
 
 type MenuKey =
-  | 'overview' | 'employees' | 'employee-new' | 'employee-360' | 'employee-add' | 'id-card' | 'organization' | 'hr-operations'
+  | 'overview' | 'employees' | 'employee-new' | 'employee-inactive' | 'employee-360' | 'employee-add' | 'id-card' | 'organization' | 'hr-operations'
   | 'attendance' | 'attendance-today' | 'late' | 'leave' | 'overtime' | 'selfie' | 'gps'
   | 'schedule' | 'shift' | 'holiday' | 'leave-request' | 'leave-balance' | 'approvals'
   | 'payroll' | 'production-hr' | 'payroll-engine' | 'payroll-production-v22' | 'payroll-components' | 'payroll-overtime' | 'payslip'
@@ -104,7 +104,7 @@ const rolePermissions: Record<string, string[]> = {
 
 const menuGroup = (key: MenuKey) => 
   ['professional-suite'].includes(key) ? 'system' : 
-  ['employees', 'employee-new', 'id-card', 'employee-360', 'employee-add', 'organization'].includes(key) ? 'people' :
+  ['employees', 'employee-new', 'employee-inactive', 'id-card', 'employee-360', 'employee-add', 'organization'].includes(key) ? 'people' :
   ['attendance', 'attendance-today', 'late', 'leave', 'overtime', 'selfie'].includes(key) ? 'attendance' : 
   ['schedule', 'shift', 'holiday'].includes(key) ? 'schedule' : 
   ['leave-request', 'leave-balance', 'approvals'].includes(key) ? 'leave' : 
@@ -479,7 +479,24 @@ export default function DashboardAdmin() {
   const [menu, setMenu] = useState<MenuKey>('overview');
   const [sidebar, setSidebar] = useState(() => window.innerWidth >= 900);
   const [employees, setEmployees] = useState<Karyawan[]>([]);
-  const pendingEmployees = useMemo(() => employees.filter(k => k.status_aktif === false && String(k.role || 'karyawan').toLowerCase() === 'karyawan' && String(k.status_karyawan || '').toLowerCase() !== 'ditolak'), [employees]);
+  const [pendingRegistrationIds, setPendingRegistrationIds] = useState<Set<string>>(new Set());
+
+  // Karyawan Baru = hanya registrasi yang benar-benar masih menunggu approval.
+  // Karyawan Tidak Aktif = sudah pernah menjadi karyawan, lalu dinonaktifkan.
+  const pendingEmployees = useMemo(() => employees.filter(k => {
+    const id = String(k.id_karyawan || '').trim();
+    return k.status_aktif === false
+      && String(k.role || 'karyawan').toLowerCase() === 'karyawan'
+      && String(k.status_karyawan || '').toLowerCase() !== 'ditolak'
+      && pendingRegistrationIds.has(id);
+  }), [employees, pendingRegistrationIds]);
+
+  const inactiveEmployees = useMemo(() => employees.filter(k => {
+    const id = String(k.id_karyawan || '').trim();
+    return k.status_aktif === false
+      && String(k.status_karyawan || '').toLowerCase() !== 'ditolak'
+      && !pendingRegistrationIds.has(id);
+  }), [employees, pendingRegistrationIds]);
 
   // FLOATING_NOTIFICATION_GROUP_START
   const [notificationUnread, setNotificationUnread] = useState(0);
@@ -792,6 +809,7 @@ export default function DashboardAdmin() {
       items: [
         ['employees', t('all_employees'), 'users'] as [MenuKey, string, string],
         ['employee-new', `${t('admin_new_employee')}${pendingEmployees.length ? ` (${pendingEmployees.length})` : ''}`, 'users'] as [MenuKey, string, string],
+        ['employee-inactive', `${t('inactive_employees')}${inactiveEmployees.length ? ` (${inactiveEmployees.length})` : ''}`, 'users'] as [MenuKey, string, string],
         ['id-card', t('id_card'), 'card'] as [MenuKey, string, string],
         ['employee-360', t('employee_360'), 'users'] as [MenuKey, string, string],
         ['organization', t('organization'), 'org'] as [MenuKey, string, string],
@@ -902,12 +920,19 @@ export default function DashboardAdmin() {
 
   async function refresh() {
     setLoading(true); setError('');
-    const [k, a] = await Promise.all([
+    const [k, a, ar] = await Promise.all([
       supabase.from('karyawan').select('*').order('nama'),
-      supabase.from('absensi').select('*').order('created_at', { ascending: false }).limit(2000)
+      supabase.from('absensi').select('*').order('created_at', { ascending: false }).limit(2000),
+      supabase.from('hris_approval_requests').select('record_id').eq('modul', 'employee_registration').eq('status', 'Menunggu').limit(500)
     ]);
     if (k.error) setError(`Karyawan: ${k.error.message}`); else setEmployees(k.data || []);
     if (a.error) setError(v => v ? `${v}\nAbsensi: ${a.error.message}` : `Absensi: ${a.error.message}`); else setAttendance(a.data || []);
+    if (ar.error) {
+      console.error('Gagal memuat approval registrasi:', ar.error);
+      setPendingRegistrationIds(new Set());
+    } else {
+      setPendingRegistrationIds(new Set((ar.data || []).map((row: any) => String(row.record_id || '').trim()).filter(Boolean)));
+    }
     setLoading(false);
   }
 
@@ -1021,6 +1046,23 @@ export default function DashboardAdmin() {
     setToast(t("employee_saved"));
     refresh();
     return true;
+  }
+
+  async function activateEmployee(k: Karyawan) {
+    if (!canWrite(dbPerms, 'people', userRole)) {
+      setError('Anda tidak memiliki permission people.write.');
+      return;
+    }
+    if (!await appConfirm(`Aktifkan kembali ${k.nama}?`)) return;
+    const { error: e } = await supabase
+      .from('karyawan')
+      .update({
+        status_aktif: true,
+        status_karyawan: String(k.status_karyawan || '').toLowerCase() === 'ditolak' ? 'Tetap' : (k.status_karyawan || 'Tetap')
+      })
+      .eq('id', k.id);
+    if (e) setError(e.message);
+    else { setToast(`${k.nama} ${t('employee_reactivated')}`); refresh(); }
   }
 
   const payroll = employees.reduce((s, k) => s + Number(k.gaji_pokok || 0), 0);
@@ -1371,6 +1413,7 @@ return (
     {menu==='id-card'&&<IDCardModule employees={employees} companyName="Project by Tirta" logoUrl={moonLogo}/> }
     {menu==='employees'&&<Employees data={employees.filter(k => k.status_aktif !== false)} onDelete={removeEmployee} onEdit={setEditing} onExport={(columns, format)=>format==='excel' ? exportExcel(employees.filter(k => k.status_aktif !== false) as any,'database-karyawan.xls',columns) : exportCsv(employees.filter(k => k.status_aktif !== false) as any,'database-karyawan.csv',columns)} onAdd={()=>navigate('employee-add')} />}
     {menu==='employee-new'&&<NewEmployees data={pendingEmployees} onRefresh={refresh} />}
+    {menu==='employee-inactive'&&<InactiveEmployees data={inactiveEmployees} onEdit={setEditing} onActivate={activateEmployee} />}
     {menu==='employee-360'&&<Employee360 employees={employees} initialEmployeeId={employee360Id}/>}
     {menu==='employee-add'&&<AddEmployee refresh={refresh} onDone={()=>navigate('employees')}/>} {menu==='hr-operations'&&<HRISCore employees={employees}/>} {menu==='production-hr'&&<ProductionHR employees={employees}/>} 
     {menu==='organization'&&<MasterData initialTab="cabang"/>}
@@ -1758,6 +1801,20 @@ function NewEmployees({data,onRefresh}:{data:Karyawan[];onRefresh:()=>void}) {
       : { status_aktif:false, status_karyawan:'Ditolak' };
     const {error}=await supabase.from('karyawan').update(update).eq('id',selected.id);
     if(error){ await appAlert(error.message); setBusy(false); return; }
+
+    const { data: authData } = await supabase.auth.getUser();
+    await supabase
+      .from('hris_approval_requests')
+      .update({
+        status: decision === 'Terima' ? 'Disetujui' : 'Ditolak',
+        decided_by: authData.user?.email || null,
+        decided_at: new Date().toISOString(),
+        catatan: decision === 'Terima' ? 'Registrasi karyawan disetujui.' : 'Registrasi karyawan ditolak.'
+      })
+      .eq('modul','employee_registration')
+      .eq('record_id',selected.id_karyawan || '')
+      .eq('status','Menunggu');
+
     setSelected(null); setBusy(false); onRefresh();
   };
 
@@ -1781,6 +1838,30 @@ function NewEmployees({data,onRefresh}:{data:Karyawan[];onRefresh:()=>void}) {
       </div>
       <div className="export-foot"><button className="secondary" disabled={busy} onClick={()=>setSelected(null)}>{t('close')}</button><button className="danger-text" disabled={busy} onClick={()=>decide('Tolak')}>{t('reject')}</button><button className="primary" disabled={busy} onClick={()=>decide('Terima')}>{busy?t('processing'):t('accept')}</button></div>
     </div></div>}
+  </>;
+}
+
+function InactiveEmployees({data,onEdit,onActivate}:{data:Karyawan[];onEdit:(k:Karyawan)=>void;onActivate:(k:Karyawan)=>void}) {
+  const { t } = useTranslation();
+  return <>
+    <Heading title={t('inactive_employees')} desc={t('inactive_employees_desc')} />
+    <div className="toolbar"><b>{data.length} {t('inactive_employees').toLowerCase()}</b></div>
+    <div className="panel table-panel inactive-employee-panel">
+      <div className="table-wrap"><table><thead><tr>
+        <th>{t('name')}</th><th>{t('employee_id')}</th><th>{t('position')}</th><th>{t('department')}</th><th>{t('employee_status')}</th><th>{t('actions')}</th>
+      </tr></thead><tbody>
+        {data.length ? data.map(k => <tr key={k.id}>
+          <td><div className="person"><div className="mini-avatar inactive-avatar">{k.nama?.[0]||'K'}</div><div><b>{k.nama||'—'}</b><small>{k.email||'—'}</small></div></div></td>
+          <td>{k.id_karyawan||'—'}</td>
+          <td>{k.jabatan||'—'}</td>
+          <td>{k.departemen||'—'}</td>
+          <td><span className="status status-red-inactive">{t('inactive')}</span></td>
+          <td><div className="row-actions inactive-actions">
+            <button className="link-btn" type="button" onClick={()=>onEdit(k)}>{t('edit_data')}</button>
+            <button className="secondary activate-btn" type="button" onClick={()=>onActivate(k)}>{t('activate_employee')}</button>
+          </div></td>
+        </tr>) : <Empty cols={6}/>}</tbody></table></div>
+    </div>
   </>;
 }
 

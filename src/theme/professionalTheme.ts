@@ -1457,6 +1457,374 @@ html[data-cosmic-theme="nebula"] .employee-portal-cosmic::after {
   .ess-kpi::after { animation:none !important; }
 }
 
+
+
+/* Project by Tirta — FINAL INACTIVE EMPLOYEE + EMPLOYEE PORTAL UI */
+
+/* =========================================================
+   HARD OVERRIDE: NO WHITE TABLE ACTION BUTTONS
+   ========================================================= */
+html[data-cosmic-theme] .row-actions > button,
+html[data-cosmic-theme] .table-panel .row-actions > button,
+html[data-cosmic-theme] button.link-btn,
+html[data-cosmic-theme] button.danger-text {
+  appearance:none !important;
+  -webkit-appearance:none !important;
+  background:rgba(8,17,31,.96) !important;
+  color:#edf3fb !important;
+  border:1px solid rgba(214,174,88,.62) !important;
+  border-radius:10px !important;
+  min-height:32px !important;
+  padding:0 11px !important;
+  box-shadow:0 7px 20px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.03) !important;
+  opacity:1 !important;
+  text-decoration:none !important;
+}
+
+html[data-cosmic-theme] .row-actions > button:hover,
+html[data-cosmic-theme] button.link-btn:hover {
+  background:rgba(24,42,71,.98) !important;
+  color:#fff !important;
+  border-color:var(--pt-accent) !important;
+  box-shadow:0 10px 26px rgba(0,0,0,.36), 0 0 18px color-mix(in srgb,var(--pt-accent) 12%,transparent) !important;
+  transform:translateY(-1px) !important;
+}
+
+html[data-cosmic-theme] .row-actions > .danger-text,
+html[data-cosmic-theme] button.danger-text {
+  background:rgba(69,12,27,.94) !important;
+  color:#ffd2da !important;
+  border-color:rgba(255,113,135,.48) !important;
+}
+
+html[data-cosmic-theme] .row-actions > .danger-text:hover,
+html[data-cosmic-theme] button.danger-text:hover {
+  background:rgba(105,17,41,.98) !important;
+  color:#fff !important;
+  border-color:#ff7187 !important;
+}
+
+html[data-cosmic-theme] .inactive-actions .activate-btn {
+  background:linear-gradient(135deg,var(--pt-accent),color-mix(in srgb,var(--pt-accent) 56%,#fff 44%)) !important;
+  color:#08111d !important;
+  border-color:var(--pt-accent) !important;
+}
+
+html[data-cosmic-theme] .inactive-actions .activate-btn:hover {
+  color:#07111f !important;
+  filter:brightness(1.06) !important;
+}
+
+.inactive-avatar {
+  background:rgba(255,113,135,.10) !important;
+  color:#ffb2be !important;
+  border-color:rgba(255,113,135,.28) !important;
+}
+.status-red-inactive {
+  display:inline-flex !important;
+  align-items:center !important;
+  padding:6px 10px !important;
+  border-radius:999px !important;
+  background:rgba(255,113,135,.10) !important;
+  border:1px solid rgba(255,113,135,.24) !important;
+  color:#ffb3bf !important;
+}
+
+/* =========================================================
+   EMPLOYEE PORTAL — PROFESSIONAL HR COMMAND CENTER
+   ========================================================= */
+html[data-cosmic-theme] .employee-portal {
+  min-height:100vh !important;
+  position:relative !important;
+  isolation:isolate !important;
+  background:linear-gradient(180deg,var(--pt-bg-base),var(--pt-bg-deep)) !important;
+}
+
+html[data-cosmic-theme] .employee-portal::after {
+  content:"" !important;
+  position:fixed !important;
+  inset:0 !important;
+  z-index:-1 !important;
+  pointer-events:none !important;
+  opacity:.9 !important;
+  background:radial-gradient(circle at 80% 8%,color-mix(in srgb,var(--pt-accent) 11%,transparent),transparent 22%),radial-gradient(circle at 12% 88%,color-mix(in srgb,var(--pt-accent-2) 9%,transparent),transparent 25%);
+}
+
+html[data-cosmic-theme] .employee-page {
+  max-width:1480px !important;
+  margin:0 auto !important;
+  padding:30px 28px 90px !important;
+}
+
+html[data-cosmic-theme] .employee-topbar {
+  position:sticky !important;
+  top:0 !important;
+  z-index:50 !important;
+  background:rgba(3,8,16,.88) !important;
+  border-bottom:1px solid rgba(214,174,88,.32) !important;
+  box-shadow:0 12px 38px rgba(0,0,0,.34) !important;
+}
+
+html[data-cosmic-theme] .employee-heading {
+  padding:4px 2px 0 !important;
+  margin-bottom:18px !important;
+}
+html[data-cosmic-theme] .employee-heading h1 { font-size:clamp(28px,3vw,42px) !important; }
+html[data-cosmic-theme] .date-chip {
+  background:rgba(8,17,31,.78) !important;
+  color:#c8d4e5 !important;
+  border:1px solid rgba(214,174,88,.34) !important;
+}
+
+html[data-cosmic-theme] .employee-tabs {
+  width:100% !important;
+  margin-bottom:20px !important;
+  overflow:auto !important;
+  scrollbar-width:none !important;
+  background:rgba(5,12,23,.78) !important;
+  border:1px solid rgba(214,174,88,.24) !important;
+  box-shadow:0 12px 34px rgba(0,0,0,.24) !important;
+}
+html[data-cosmic-theme] .employee-tabs::-webkit-scrollbar { display:none; }
+html[data-cosmic-theme] .employee-tabs button {
+  white-space:nowrap !important;
+  min-height:39px !important;
+  color:#aeb9ca !important;
+  background:transparent !important;
+}
+html[data-cosmic-theme] .employee-tabs button.active {
+  background:linear-gradient(135deg,var(--pt-accent),color-mix(in srgb,var(--pt-accent) 50%,#fff 50%)) !important;
+  color:#07111f !important;
+}
+
+html[data-cosmic-theme] .ess-kpis { grid-template-columns:repeat(3,minmax(0,1fr)) !important; }
+html[data-cosmic-theme] .ess-kpi {
+  min-height:140px !important;
+  padding:21px !important;
+  overflow:hidden !important;
+  position:relative !important;
+}
+html[data-cosmic-theme] .ess-kpi::after {
+  content:"" !important;
+  position:absolute !important;
+  right:-45px !important;
+  bottom:-55px !important;
+  width:150px !important;
+  height:150px !important;
+  border-radius:50% !important;
+  border:1px solid color-mix(in srgb,var(--pt-accent) 18%,transparent) !important;
+  box-shadow:0 0 40px color-mix(in srgb,var(--pt-accent) 9%,transparent) !important;
+  animation:pt-employee-orbit 8s ease-in-out infinite alternate !important;
+}
+@keyframes pt-employee-orbit { from{transform:translate(0,0) rotate(-8deg)} to{transform:translate(-10px,-8px) rotate(8deg)} }
+
+html[data-cosmic-theme] .attendance-grid,
+html[data-cosmic-theme] .portal-grid,
+html[data-cosmic-theme] .payslip-grid { align-items:stretch !important; }
+html[data-cosmic-theme] .portal-card {
+  overflow:hidden !important;
+  position:relative !important;
+  background:linear-gradient(145deg,rgba(13,25,44,.90),rgba(5,12,24,.82)) !important;
+  border:1px solid rgba(214,174,88,.34) !important;
+}
+html[data-cosmic-theme] .portal-card::after {
+  content:"" !important;
+  position:absolute !important;
+  inset:0 !important;
+  pointer-events:none !important;
+  background:linear-gradient(115deg,transparent 0 55%,color-mix(in srgb,var(--pt-accent-2) 5%,transparent) 70%,transparent 84%) !important;
+  transform:translateX(-35%) !important;
+  animation:pt-portal-sheen 15s ease-in-out infinite alternate !important;
+}
+@keyframes pt-portal-sheen { from{transform:translateX(-35%)} to{transform:translateX(20%)} }
+
+html[data-cosmic-theme] .card-title,
+html[data-cosmic-theme] .suggestion-header { position:relative !important; z-index:2 !important; }
+html[data-cosmic-theme] .card-title h2 { color:#fff !important; }
+html[data-cosmic-theme] .portal-card p,
+html[data-cosmic-theme] .portal-card .muted { color:#9eabbd !important; }
+
+html[data-cosmic-theme] .security-box,
+html[data-cosmic-theme] .balance-list,
+html[data-cosmic-theme] .quick-list,
+html[data-cosmic-theme] .request-list,
+html[data-cosmic-theme] .schedule-grid {
+  position:relative !important;
+  z-index:2 !important;
+}
+
+/* ---------- ANNOUNCEMENTS ---------- */
+html[data-cosmic-theme] .employee-announcement-center {
+  display:block !important;
+}
+html[data-cosmic-theme] .announcement-center-header {
+  margin-bottom:16px !important;
+  padding:20px 22px !important;
+  border:1px solid rgba(214,174,88,.30) !important;
+  border-radius:20px !important;
+  background:linear-gradient(145deg,rgba(13,25,44,.92),rgba(5,12,24,.80)) !important;
+  box-shadow:0 20px 60px rgba(0,0,0,.30) !important;
+}
+html[data-cosmic-theme] .announcement-center-header h2 { margin:0 0 6px !important; color:#fff !important; font-size:22px !important; }
+html[data-cosmic-theme] .announcement-center-header p { margin:0 !important; color:#98a6ba !important; font-size:12px !important; }
+html[data-cosmic-theme] .announcement-list { display:grid !important; gap:14px !important; }
+html[data-cosmic-theme] .announcement-card {
+  padding:18px 20px !important;
+  border:1px solid rgba(214,174,88,.28) !important;
+  border-radius:18px !important;
+  background:linear-gradient(145deg,rgba(15,29,49,.94),rgba(6,14,27,.84)) !important;
+  box-shadow:0 16px 45px rgba(0,0,0,.28) !important;
+  transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease !important;
+}
+html[data-cosmic-theme] .announcement-card:hover { transform:translateY(-2px) !important; border-color:var(--pt-accent) !important; box-shadow:0 22px 58px rgba(0,0,0,.36) !important; }
+html[data-cosmic-theme] .announcement-card.is-unread { border-left:4px solid var(--pt-accent) !important; }
+html[data-cosmic-theme] .announcement-card.is-read { opacity:.82 !important; }
+html[data-cosmic-theme] .announcement-card-topline { display:flex !important; gap:11px !important; align-items:flex-start !important; }
+html[data-cosmic-theme] .announcement-status-dot { width:9px !important; height:9px !important; margin-top:6px !important; flex:0 0 9px !important; border-radius:50% !important; background:#657389 !important; box-shadow:0 0 0 3px rgba(101,115,137,.10) !important; }
+html[data-cosmic-theme] .announcement-card.is-unread .announcement-status-dot { background:var(--pt-accent) !important; box-shadow:0 0 0 3px color-mix(in srgb,var(--pt-accent) 13%,transparent),0 0 14px color-mix(in srgb,var(--pt-accent) 22%,transparent) !important; }
+html[data-cosmic-theme] .announcement-card-title { display:flex !important; gap:8px !important; flex-wrap:wrap !important; align-items:center !important; }
+html[data-cosmic-theme] .announcement-title { color:#fff !important; font-size:16px !important; line-height:1.35 !important; }
+html[data-cosmic-theme] .announcement-meta { display:flex !important; gap:7px !important; flex-wrap:wrap !important; color:#8f9eb1 !important; margin:9px 0 11px 20px !important; font-size:10px !important; }
+html[data-cosmic-theme] .announcement-body { margin:0 0 14px 20px !important; color:#c4cfdd !important; font-size:12px !important; line-height:1.75 !important; white-space:pre-wrap !important; }
+html[data-cosmic-theme] .announcement-card-footer { display:flex !important; justify-content:flex-end !important; margin-left:20px !important; }
+html[data-cosmic-theme] .announcement-card-footer button { min-height:34px !important; border-radius:10px !important; background:rgba(9,19,34,.94) !important; color:#dfe7f2 !important; border:1px solid rgba(214,174,88,.40) !important; padding:0 12px !important; }
+html[data-cosmic-theme] .announcement-card-footer button:hover { background:var(--pt-accent) !important; color:#07111f !important; }
+
+/* ---------- SUGGESTION BOX ---------- */
+html[data-cosmic-theme] .suggestion-box {
+  padding:21px !important;
+}
+html[data-cosmic-theme] .suggestion-header {
+  display:flex !important; justify-content:space-between !important; gap:15px !important; align-items:flex-start !important; margin-bottom:18px !important;
+}
+html[data-cosmic-theme] .suggestion-header h2 { margin:4px 0 5px !important; color:#fff !important; font-size:20px !important; }
+html[data-cosmic-theme] .suggestion-security { flex:0 0 auto !important; padding:7px 10px !important; border-radius:999px !important; background:rgba(73,214,161,.08) !important; border:1px solid rgba(73,214,161,.18) !important; color:#8fe0c0 !important; font-size:9px !important; font-weight:800 !important; text-transform:uppercase !important; letter-spacing:.08em !important; }
+html[data-cosmic-theme] .suggestion-footer { display:flex !important; align-items:center !important; justify-content:space-between !important; gap:12px !important; flex-wrap:wrap !important; margin-top:4px !important; }
+html[data-cosmic-theme] .suggestion-footer small { color:#8f9eb1 !important; max-width:520px !important; line-height:1.5 !important; }
+html[data-cosmic-theme] .suggestion-success { text-align:center !important; }
+html[data-cosmic-theme] .suggestion-success-icon { width:54px !important; height:54px !important; margin:0 auto 12px !important; display:grid !important; place-items:center !important; border-radius:50% !important; background:rgba(73,214,161,.10) !important; border:1px solid rgba(73,214,161,.25) !important; color:#7be4bf !important; font-size:25px !important; font-weight:900 !important; }
+
+/* ---------- OTHER EMPLOYEE MODULES ---------- */
+html[data-cosmic-theme] .attendance-card,
+html[data-cosmic-theme] .info-card,
+html[data-cosmic-theme] .table-card,
+html[data-cosmic-theme] .payslip-card { min-height:100% !important; }
+html[data-cosmic-theme] .attendance-meta > div,
+html[data-cosmic-theme] .quick-list button,
+html[data-cosmic-theme] .info-list > div,
+html[data-cosmic-theme] .balance-list > div,
+html[data-cosmic-theme] .request-list > div,
+html[data-cosmic-theme] .schedule-item,
+html[data-cosmic-theme] .salary-lines > div {
+  background:rgba(8,17,31,.72) !important;
+  border-color:rgba(151,179,224,.14) !important;
+  color:#e7edf5 !important;
+}
+html[data-cosmic-theme] .employee-form input,
+html[data-cosmic-theme] .employee-form select,
+html[data-cosmic-theme] .employee-form textarea {
+  background:#07111f !important;
+  color:#eff4fb !important;
+  border-color:rgba(151,179,224,.24) !important;
+}
+html[data-cosmic-theme] .table-scroll,
+html[data-cosmic-theme] .table-wrap { border-color:rgba(214,174,88,.22) !important; }
+html[data-cosmic-theme] .table-scroll table,
+html[data-cosmic-theme] .table-wrap table { background:rgba(5,12,23,.42) !important; }
+html[data-cosmic-theme] .portal-info { background:rgba(73,214,161,.07) !important; border-color:rgba(73,214,161,.22) !important; color:#9fe5c8 !important; }
+html[data-cosmic-theme] .portal-error { background:rgba(255,88,110,.08) !important; border-color:rgba(255,113,135,.22) !important; color:#ffabb7 !important; }
+
+/* =========================================================
+   FIVE THEMES — DISTINCT BACKGROUND IDENTITY
+   ========================================================= */
+html[data-cosmic-theme="sun"] .talenta-shell,
+html[data-cosmic-theme="sun"] .employee-portal {
+  background:radial-gradient(circle at 83% 8%,rgba(255,199,103,.24),transparent 20%),linear-gradient(180deg,#130e09 0%,#05080f 62%,#02050a 100%) !important;
+}
+html[data-cosmic-theme="sun"] .talenta-shell::after,
+html[data-cosmic-theme="sun"] .employee-portal::before {
+  background:radial-gradient(circle at 83% 8%,rgba(255,235,180,.18) 0 2%,transparent 11%),conic-gradient(from 20deg at 83% 8%,transparent 0 18deg,rgba(255,165,64,.16) 29deg,transparent 43deg,rgba(255,225,154,.10) 58deg,transparent 74deg 360deg) !important;
+  animation:pt-theme-sun 12s ease-in-out infinite alternate !important;
+}
+@keyframes pt-theme-sun{from{transform:scale(1) rotate(-1deg);opacity:.55}to{transform:scale(1.08) rotate(2deg);opacity:.95}}
+
+html[data-cosmic-theme="moon"] .talenta-shell,
+html[data-cosmic-theme="moon"] .employee-portal {
+  background:radial-gradient(circle at 78% 10%,rgba(224,237,255,.18),transparent 17%),linear-gradient(180deg,#071326 0%,#040a15 60%,#02060e 100%) !important;
+}
+html[data-cosmic-theme="moon"] .talenta-shell::after,
+html[data-cosmic-theme="moon"] .employee-portal::before {
+  background:radial-gradient(circle at 78% 10%,rgba(244,249,255,.62) 0 2.4%,rgba(190,218,247,.16) 5%,transparent 15%),radial-gradient(circle at 17% 71%,rgba(112,164,226,.10),transparent 26%) !important;
+  animation:pt-theme-moon 15s ease-in-out infinite alternate !important;
+}
+@keyframes pt-theme-moon{from{transform:translate3d(-1%,0,0);opacity:.62}to{transform:translate3d(1%,1%,0);opacity:1}}
+
+html[data-cosmic-theme="galaxy"] .talenta-shell,
+html[data-cosmic-theme="galaxy"] .employee-portal {
+  background:radial-gradient(ellipse at 72% 16%,rgba(177,123,255,.23),transparent 23%),radial-gradient(ellipse at 20% 72%,rgba(80,141,255,.14),transparent 27%),linear-gradient(180deg,#100a23 0%,#05030f 68%,#020107 100%) !important;
+}
+html[data-cosmic-theme="galaxy"] .talenta-shell::after,
+html[data-cosmic-theme="galaxy"] .employee-portal::before {
+  background:linear-gradient(155deg,transparent 28%,rgba(213,156,255,.09) 43%,transparent 57%),radial-gradient(ellipse at 62% 32%,rgba(81,194,255,.15),transparent 28%) !important;
+  animation:pt-theme-galaxy 20s ease-in-out infinite alternate !important;
+}
+@keyframes pt-theme-galaxy{from{transform:translate3d(-1%,.5%,0) rotate(-.5deg);opacity:.55}to{transform:translate3d(1%,-.7%,0) rotate(1deg);opacity:1}}
+
+html[data-cosmic-theme="blackhole"] .talenta-shell,
+html[data-cosmic-theme="blackhole"] .employee-portal {
+  background:radial-gradient(circle at 75% 12%,rgba(99,215,255,.11),transparent 16%),linear-gradient(180deg,#07090e 0%,#020306 70%,#010204 100%) !important;
+}
+html[data-cosmic-theme="blackhole"] .talenta-shell::after,
+html[data-cosmic-theme="blackhole"] .employee-portal::before {
+  background:radial-gradient(circle at 75% 12%,#000 0 4%,transparent 4.5%),radial-gradient(ellipse at 75% 12%,transparent 0 6%,rgba(240,191,91,.26) 8%,rgba(73,203,255,.22) 11%,transparent 17%),conic-gradient(from 20deg at 75% 12%,transparent 0 17%,rgba(83,212,255,.15) 28%,transparent 41%,rgba(245,185,80,.13) 56%,transparent 77%) !important;
+  animation:pt-theme-blackhole 16s linear infinite !important;
+}
+@keyframes pt-theme-blackhole{to{transform:rotate(360deg)}}
+
+html[data-cosmic-theme="nebula"] .talenta-shell,
+html[data-cosmic-theme="nebula"] .employee-portal {
+  background:radial-gradient(ellipse at 70% 17%,rgba(255,139,215,.20),transparent 21%),radial-gradient(ellipse at 22% 65%,rgba(82,192,255,.13),transparent 27%),radial-gradient(ellipse at 80% 73%,rgba(169,90,255,.10),transparent 23%),linear-gradient(180deg,#160818 0%,#060510 68%,#02040a 100%) !important;
+}
+html[data-cosmic-theme="nebula"] .talenta-shell::after,
+html[data-cosmic-theme="nebula"] .employee-portal::before {
+  background:radial-gradient(ellipse at 64% 22%,rgba(255,159,226,.22),transparent 24%),radial-gradient(ellipse at 30% 66%,rgba(91,208,255,.17),transparent 29%),radial-gradient(ellipse at 78% 72%,rgba(194,107,255,.14),transparent 24%) !important;
+  filter:blur(7px) saturate(1.08) !important;
+  animation:pt-theme-nebula 17s ease-in-out infinite alternate !important;
+}
+@keyframes pt-theme-nebula{from{transform:translate3d(-1%,1%,0) scale(1)}to{transform:translate3d(1.2%,-1%,0) scale(1.07)}}
+
+@media(max-width:900px){
+  html[data-cosmic-theme] .employee-page { padding:24px 18px 84px !important; }
+  html[data-cosmic-theme] .ess-kpis { grid-template-columns:1fr !important; }
+}
+@media(max-width:680px){
+  html[data-cosmic-theme] .employee-page { padding:20px 13px 80px !important; }
+  html[data-cosmic-theme] .announcement-center-header { padding:17px !important; }
+  html[data-cosmic-theme] .announcement-card { padding:15px !important; }
+  html[data-cosmic-theme] .announcement-meta,
+  html[data-cosmic-theme] .announcement-body,
+  html[data-cosmic-theme] .announcement-card-footer { margin-left:0 !important; }
+  html[data-cosmic-theme] .suggestion-header { flex-direction:column !important; }
+  html[data-cosmic-theme] .suggestion-security { align-self:flex-start !important; }
+  html[data-cosmic-theme] .suggestion-footer { align-items:stretch !important; }
+  html[data-cosmic-theme] .suggestion-footer .portal-primary { width:100% !important; }
+  html[data-cosmic-theme] .row-actions { justify-content:flex-start !important; }
+}
+@media(prefers-reduced-motion:reduce){
+  html[data-cosmic-theme] .ess-kpi::after,
+  html[data-cosmic-theme] .portal-card::after,
+  html[data-cosmic-theme="sun"] .talenta-shell::after,
+  html[data-cosmic-theme="sun"] .employee-portal::before,
+  html[data-cosmic-theme="moon"] .talenta-shell::after,
+  html[data-cosmic-theme="moon"] .employee-portal::before,
+  html[data-cosmic-theme="galaxy"] .talenta-shell::after,
+  html[data-cosmic-theme="galaxy"] .employee-portal::before,
+  html[data-cosmic-theme="blackhole"] .talenta-shell::after,
+  html[data-cosmic-theme="blackhole"] .employee-portal::before,
+  html[data-cosmic-theme="nebula"] .talenta-shell::after,
+  html[data-cosmic-theme="nebula"] .employee-portal::before { animation:none !important; }
+}
+
 `;
 
 export const COSMIC_THEMES = {
