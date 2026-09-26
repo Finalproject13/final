@@ -2,7 +2,7 @@ import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 
 const GITHUB_API =
-  'https://api.github.com/repos/ProjectByMoon/Tirta/releases/latest';
+  'https://api.github.com/repos/Finalproject13/final/releases/latest';
 
 export async function checkForAppUpdate(): Promise<void> {
   // Hanya jalankan di Android
