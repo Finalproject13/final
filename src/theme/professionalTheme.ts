@@ -167,6 +167,129 @@ input:focus, select:focus, textarea:focus { border-color:var(--pt-accent) !impor
 @keyframes pt-heading-pulse { from { transform:translate3d(-4px, 2px, 0) scale(.96); opacity:.48; } to { transform:translate3d(5px, -3px, 0) scale(1.06); opacity:.82; } }
 
 @media (prefers-reduced-motion:reduce) { *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.001ms !important; } }
+
+
+/* Project by Tirta — FINAL DARK DRAWER / BUTTON OVERRIDE */
+
+/* Drawer edit karyawan */
+.edit-drawer {
+  background: #0b1222 !important;
+  color: #e2e5ea !important;
+}
+
+.edit-drawer .drawer-head,
+.edit-drawer .drawer-foot {
+  background: #0b1222 !important;
+  color: #e2e5ea !important;
+  border-color: #d6ae58 !important;
+}
+
+.edit-drawer .drawer-head span,
+.edit-drawer .drawer-head h2,
+.edit-drawer .drawer-body label,
+.edit-drawer .drawer-body strong,
+.edit-drawer .drawer-body small,
+.edit-drawer .switch-row span {
+  color: #e2e5ea !important;
+}
+
+/* Panel foto */
+.edit-drawer .drawer-body > div {
+  background: #101827 !important;
+  border-color: #8f99a8 !important;
+}
+
+/* Input dan select */
+.edit-drawer .drawer-body input:not([type="checkbox"]),
+.edit-drawer .drawer-body select,
+.edit-drawer .drawer-body textarea {
+  background: #101827 !important;
+  color: #eef3fb !important;
+  border: 1px solid #8f99a8 !important;
+}
+
+.edit-drawer .drawer-body input:not([type="checkbox"]):focus,
+.edit-drawer .drawer-body select:focus,
+.edit-drawer .drawer-body textarea:focus {
+  background: #111d35 !important;
+  color: #ffffff !important;
+  border-color: #d6ae58 !important;
+  box-shadow: 0 0 0 3px rgba(214,174,88,.14) !important;
+}
+
+.edit-drawer .drawer-body input::placeholder,
+.edit-drawer .drawer-body textarea::placeholder {
+  color: #7f8da3 !important;
+}
+
+/* Tombol Ganti Foto / tombol secondary */
+.edit-drawer button.secondary,
+.edit-drawer label.secondary {
+  background: #172033 !important;
+  color: #e2e5ea !important;
+  border: 1px solid #d6ae58 !important;
+  box-shadow: none !important;
+}
+
+.edit-drawer button.secondary:hover,
+.edit-drawer label.secondary:hover,
+.edit-drawer button.secondary:focus-visible,
+.edit-drawer label.secondary:focus-visible {
+  background: #263453 !important;
+  color: #ffffff !important;
+  border-color: #f0d68c !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.30) !important;
+  filter: none !important;
+  transform: translateY(-1px);
+}
+
+/* Tombol utama */
+.edit-drawer button.primary {
+  background: linear-gradient(135deg, #d6ae58, #f0d68c) !important;
+  color: #0b1222 !important;
+  border: 1px solid #f0d68c !important;
+  box-shadow: 0 8px 22px rgba(214,174,88,.18) !important;
+}
+
+.edit-drawer button.primary:hover,
+.edit-drawer button.primary:focus-visible {
+  background: linear-gradient(135deg, #f0d68c, #d6ae58) !important;
+  color: #07101f !important;
+  border-color: #ffe7a8 !important;
+  box-shadow: 0 10px 26px rgba(214,174,88,.24) !important;
+  filter: none !important;
+  transform: translateY(-1px);
+}
+
+/* Status aktif */
+.edit-drawer .switch-row {
+  background: #101827 !important;
+  border: 1px solid #d6ae58 !important;
+  color: #e2e5ea !important;
+}
+
+/* Tombol tutup drawer */
+.edit-drawer .icon-btn {
+  background: #172033 !important;
+  color: #e2e5ea !important;
+  border: 1px solid #d6ae58 !important;
+}
+
+.edit-drawer .icon-btn:hover {
+  background: #263453 !important;
+  color: #ffffff !important;
+  border-color: #f0d68c !important;
+}
+
+/* Drawer tetap gelap di mobile */
+@media (max-width: 600px) {
+  .edit-drawer,
+  .edit-drawer .drawer-head,
+  .edit-drawer .drawer-body,
+  .edit-drawer .drawer-foot {
+    background: #0b1222 !important;
+  }
+}
 `;
 
 export const COSMIC_THEMES = {
