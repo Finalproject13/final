@@ -11,10 +11,11 @@ import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
 import EmployeeRegister from './pages/EmployeeRegister/EmployeeRegister';
 import EmployeePortal from './pages/EmployeePortal/EmployeePortal';
 import Home from './pages/Home/Home';
+import VerifyIdCard from './pages/VerifyIdCard/VerifyIdCard';
 
 import ErrorBoundary from './components/common/ErrorBoundary';
 
-type View = 'home' | 'login' | 'admin' | 'employee' | 'register' | 'reset-password';
+type View = 'home' | 'login' | 'admin' | 'employee' | 'register' | 'reset-password' | 'verify';
 
 type HrRole =
   | 'Super Admin'
@@ -30,6 +31,18 @@ const HR_ROLES: HrRole[] = [
   'Payroll',
   'Supervisor',
 ];
+
+function getVerifyTokenFromLocation(): string | null {
+  const hash = window.location.hash.replace(/^#\/?/, '');
+  if (!hash.toLowerCase().startsWith('verify/')) return null;
+  const token = hash.slice('verify/'.length).split(/[?#/]/, 1)[0];
+  if (!token) return null;
+  try {
+    return decodeURIComponent(token);
+  } catch {
+    return null;
+  }
+}
 
 /* =========================================================
    RESOLVE ACCOUNT
@@ -179,6 +192,21 @@ export default function App() {
       setChecking(true);
 
       /* ---------------------------------------------------
+         VERIFIKASI ID CARD PUBLIK
+         QR membuka route ini tanpa memerlukan login.
+         --------------------------------------------------- */
+
+      const verifyToken = getVerifyTokenFromLocation();
+      if (verifyToken) {
+        if (active) {
+          setView('verify');
+          setLoginOpen(false);
+          setChecking(false);
+        }
+        return;
+      }
+
+      /* ---------------------------------------------------
          SUPABASE BELUM DIKONFIGURASI
          --------------------------------------------------- */
 
@@ -243,6 +271,17 @@ export default function App() {
       supabase.auth.onAuthStateChange(
         async (event, session) => {
           if (!active) return;
+
+          /* -----------------------------------------------
+             VERIFIKASI ID CARD PUBLIK
+             ----------------------------------------------- */
+          const verifyToken = getVerifyTokenFromLocation();
+          if (verifyToken) {
+            setView('verify');
+            setLoginOpen(false);
+            setChecking(false);
+            return;
+          }
 
           /* -----------------------------------------------
              LOGOUT
@@ -367,6 +406,13 @@ export default function App() {
           <Home
             onMasuk={() => { setError(''); setLoginOpen(true); }}
             onRegister={() => go('register')}
+          />
+        )}
+
+        {view === 'verify' && (
+          <VerifyIdCard
+            token={getVerifyTokenFromLocation() || ''}
+            onHome={() => { setView('home'); setChecking(false); window.location.hash = '/'; window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           />
         )}
 
