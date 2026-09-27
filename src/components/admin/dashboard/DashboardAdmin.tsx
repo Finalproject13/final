@@ -26,6 +26,7 @@ import AdminAnnouncementManager from '../../../features/announcements/AdminAnnou
 import type { Announcement } from '../../../features/announcements/types';
 import AttendanceUnified from './AttendanceUnified';
 import { applyCosmicTheme, getCosmicTheme, COSMIC_THEMES, type CosmicThemeId } from '../../../theme/professionalTheme';
+import { loadUserThemePreference, saveUserThemePreference, setEmployeePortalTheme, saveCustomThemeCache } from '../../../lib/userPreferences';
 
 type Karyawan = {
   id: string;
@@ -469,6 +470,41 @@ function FeedbackAdmin({ employees }: { employees: Karyawan[] }) {
   );
 }
 
+async function hasActiveSupabaseSession(): Promise<boolean> {
+  try {
+    const { data } = await supabase.auth.getSession();
+    return Boolean(data.session?.user);
+  } catch {
+    return false;
+  }
+}
+
+function watchSupabaseAuth(load: () => void | Promise<void>) {
+  let active = true;
+
+  const run = async () => {
+    if (!active) return;
+    if (await hasActiveSupabaseSession()) {
+      await load();
+    }
+  };
+
+  void run();
+
+  const { data: authListener } = supabase.auth.onAuthStateChange(
+    (_event, session) => {
+      if (active && session) {
+        void load();
+      }
+    }
+  );
+
+  return () => {
+    active = false;
+    authListener.subscription.unsubscribe();
+  };
+}
+
 export default function DashboardAdmin() {
   const { t, lang, setLang } = useTranslation();
 
@@ -640,111 +676,23 @@ export default function DashboardAdmin() {
   const [dbPerms, setDbPerms] = useState<string[]>([]);
   const [sessionChecking, setSessionChecking] = useState(true);
 
-  // Terapkan tema tersimpan sejak Dashboard pertama kali dimuat.
-  // Settings tetap menangani editor/pilihan tema; effect ini memastikan
-  // tema juga aktif di seluruh Dashboard tanpa harus membuka Settings.
+  // Management theme is scoped to the signed-in account.
+  // Super Admin changes are additionally mirrored to the Employee Portal theme.
   useEffect(() => {
-    const DEFAULT_GLOBAL_THEME = {
-      // Global frame is intentionally fixed. Selected theme only changes page background.
-      primary: '#0b1222',
-      accent: '#d6ae58',
-      background: '#101827',
-      surface: '#101827',
-      text: '#e2e5ea',
-      border: '#d6ae58',
-      sidebar: '#070f20',
-      sidebarText: '#eef1f5',
-      sidebarMuted: '#aeb7c5',
-      sidebarActive: '#d6ae58',
-      sidebarActiveText: '#0b1222'
+    let active = true;
+    const loadTheme = async () => {
+      const { data: session } = await supabase.auth.getSession();
+      const userId = session.session?.user?.id;
+      if (!userId) return;
+      const next = await loadUserThemePreference(userId);
+      if (active) applyCosmicTheme(next, false);
     };
-
-    const isSuperAdmin =
-      userRole.trim().toLowerCase() === 'super admin';
-
-    let theme = DEFAULT_GLOBAL_THEME;
-    const saved = isSuperAdmin
-      ? localStorage.getItem('moonx-theme')
-      : null;
-
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        theme = {
-          ...DEFAULT_GLOBAL_THEME,
-          ...parsed
-        };
-      } catch {
-        theme = DEFAULT_GLOBAL_THEME;
-      }
-    }
-
-    const root = document.documentElement;
-
-    const pageText = (() => {
-      const bg = theme.background;
-      const hexToRgb = (hex: string) => {
-        const h = hex.replace('#', '');
-        if (h.length !== 6) return null;
-        const n = Number.parseInt(h, 16);
-        return Number.isNaN(n) ? null : { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
-      };
-      const rgb = hexToRgb(bg);
-      if (!rgb) return '#172033';
-      const l = (v: number) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
-      const lum = 0.2126 * l(rgb.r) + 0.7152 * l(rgb.g) + 0.0722 * l(rgb.b);
-      return lum > 0.45 ? '#172033' : '#f8fafc';
-    })();
-
-    const vars: Record<string, string> = {
-      '--mx-primary': '#0b1222',
-      '--mx-primary-contrast': '#f8fafc',
-      '--mx-accent': '#d6ae58',
-      '--mx-background': theme.background,
-      '--mx-surface': '#101827',
-      '--mx-surface-alt': '#172033',
-      '--mx-text': '#e2e5ea',
-      '--mx-text-secondary': '#c7ccd5',
-      '--mx-text-muted': '#9ba6b6',
-      '--mx-page-text': pageText,
-      '--mx-control-bg': '#111b33',
-      '--mx-control-text': '#eef1f5',
-      '--mx-control-border': '#d6ae58',
-      '--mx-sidebar': '#070f20',
-      '--mx-sidebar-text': '#eef1f5',
-      '--mx-sidebar-muted': '#aeb7c5',
-      '--mx-sidebar-active': '#d6ae58',
-      '--mx-sidebar-active-text': '#0b1222',
-      '--mx-border': '#d6ae58',
-      '--mx-border-strong': '#d6ae58',
-      '--mx-focus': '#d6ae58',
-      '--mx-blue': '#0b1222',
-      '--mx-blue-soft': 'rgba(214,174,88,.10)',
-      '--mx-success': '#44c58a',
-      '--mx-warning': '#e0ad57',
-      '--mx-danger': '#ff7d7d',
-      '--mx-info': '#78a9ff',
-      '--blue': '#0b1222',
-      '--blue2': '#172033',
-      '--blue-soft': 'rgba(214,174,88,.10)',
-      '--ink': '#e2e5ea',
-      '--line': '#d6ae58',
-      '--surface': '#101827',
-      '--bg': theme.background,
-      '--app-primary': '#0b1222',
-      '--app-primary-contrast': '#f8fafc',
-      '--app-accent': '#d6ae58',
-      '--app-bg': theme.background,
-      '--app-surface': '#101827',
-      '--app-surface-alt': '#172033',
-      '--app-text': '#e2e5ea',
-      '--app-muted': '#9ba6b6',
-      '--app-border': '#d6ae58'
+    void loadTheme();
+    return () => {
+      active = false;
     };
-    Object.entries(vars).forEach(([key, value]) => {
-      root.style.setProperty(key, value);
-    });
-  }, [userRole]);
+  }, []);
+
   const [roleOpen, setRoleOpen] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
@@ -919,6 +867,12 @@ export default function DashboardAdmin() {
 
 
   async function refresh() {
+    const authenticated = await hasActiveSupabaseSession();
+    if (!authenticated) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true); setError('');
     const [k, a, ar] = await Promise.all([
       supabase.from('karyawan').select('*').order('nama'),
@@ -1363,7 +1317,7 @@ return (
 <div className="crumb"><span>Project by Tirta</span><b>/</b>{activeLabel}</div>
 </div>
   {roleOpen && <div className="role-menu"><small>ROLE AKTIF</small>{['Super Admin','Admin','HRD','Payroll','Supervisor','Karyawan'].map(r=><button type="button" key={r} className={r===userRole?'selected':''} onClick={()=>{setRoleOpen(false); if(r!==userRole)setToast(`Role ${r} hanya dapat diubah melalui Peran & Hak Akses.`)}}>{r===userRole?'✓':' '} {r}</button>)}</div>}
-<div className="search-global"><span><Icon name="search"/></span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('search_data')}/></div><div className="top-actions"><button className="icon-btn" aria-label="Muat ulang" onClick={()=>refresh()}><Icon name="refresh"/></button><div className="profile-trigger-wrap"><button type="button" className="avatar avatar-button" aria-label={t('open_profile')} aria-expanded={profileOpen} onClick={()=>setProfileOpen(v=>!v)}>{profilePhotoUrl ? <img src={profilePhotoUrl} alt={t('profile')} /> : (profileName || "HR").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}</button>{profileOpen && <div className="profile-menu"><div className="profile-menu-header"><div className="profile-avatar-large">{(profileName || "HR").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}</div><div><strong>{profileName || email || "Pengguna"}</strong><small>{userRole || "Pengguna"}</small></div></div><div className="profile-menu-divider"/><button type="button" onClick={()=>{setProfileOpen(false);setProfilePanelOpen(true)}}><span>👤</span>{t('profile')}</button><button type="button" onClick={()=>{setProfileOpen(false);navigate("roles")}}><span>🛡️</span>{t('role')}</button><div className="profile-language">
+<div className="search-global"><span><Icon name="search"/></span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('search_data')}/></div><div className="top-actions"><ThemeControl userRole={userRole} /><button className="icon-btn" aria-label="Muat ulang" onClick={()=>refresh()}><Icon name="refresh"/></button><div className="profile-trigger-wrap"><button type="button" className="avatar avatar-button" aria-label={t('open_profile')} aria-expanded={profileOpen} onClick={()=>setProfileOpen(v=>!v)}>{profilePhotoUrl ? <img src={profilePhotoUrl} alt={t('profile')} /> : (profileName || "HR").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}</button>{profileOpen && <div className="profile-menu"><div className="profile-menu-header"><div className="profile-avatar-large">{(profileName || "HR").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}</div><div><strong>{profileName || email || "Pengguna"}</strong><small>{userRole || "Pengguna"}</small></div></div><div className="profile-menu-divider"/><button type="button" onClick={()=>{setProfileOpen(false);setProfilePanelOpen(true)}}><span>👤</span>{t('profile')}</button><button type="button" onClick={()=>{setProfileOpen(false);navigate("roles")}}><span>🛡️</span>{t('role')}</button><div className="profile-language">
   <button type="button" onClick={()=>setLanguageOpen(v=>!v)}><span>🌐</span>{t('language')} <small>{lang.toUpperCase()} ▾</small></button>
   {languageOpen && <div className="profile-language-options">
     {([['id','Indonesia'],['en','English'],['ja','日本語'],['ko','한국어'],['zh','中文']] as const).map(([code,name])=>
@@ -2540,7 +2494,7 @@ function Branch({title,desc,items,tab,setTab,action,onAction,children}:{title:st
 
 function HolidayModule(){const {t}=useTranslation();
  const [rows,setRows]=useState<any[]>([]),[modal,setModal]=useState(false),[f,setF]=useState({tanggal:isoToday(),nama:'',tipe:'Nasional'}),[msg,setMsg]=useState('');
- const load=async()=>{const {data,error}=await supabase.from('hris_hari_libur').select('*').order('tanggal');if(error)setMsg(error.message);else setRows(data||[])};useEffect(()=>{load()},[]);
+ const load=async()=>{if(!(await hasActiveSupabaseSession()))return;const {data,error}=await supabase.from('hris_hari_libur').select('*').order('tanggal');if(error)setMsg(error.message);else setRows(data||[])};useEffect(()=>watchSupabaseAuth(load),[]);
  const save=async(e:FormEvent)=>{e.preventDefault();const {error}=await supabase.from('hris_hari_libur').insert(f);if(error)setMsg(error.message);else{setModal(false);setF({tanggal:isoToday(),nama:'',tipe:'Nasional'});load()}};
  const del=async(id:string)=>{if(await appConfirm(t('delete_holiday_confirm'))){const {error}=await supabase.from('hris_hari_libur').delete().eq('id',id);if(error)setMsg(error.message);else load()}};
  return <><Heading title={t('holidays')} desc={t('holidays_desc')} action={t('add_holiday')} onAction={()=>setModal(true)}/>{msg&&<div className="alert">{msg}</div>}<div className="panel table-panel"><div className="table-wrap"><table><thead><tr><th>{t('date')}</th><th>{t('name')}</th><th>{t('type')}</th><th>{t('actions')}</th></tr></thead><tbody>{rows.length?rows.map(r=><tr key={r.id}><td>{r.tanggal}</td><td><b>{r.nama}</b></td><td><Status value={r.tipe}/></td><td><button className="danger-text" onClick={()=>del(r.id)}>{t('delete')}</button></td></tr>):<Empty cols={4}/>}</tbody></table></div></div>{modal&&<SimpleModal title={t('add_holiday')} onClose={()=>setModal(false)} onSave={save}><label>{t('date')}<input type="date" value={f.tanggal} onChange={e=>setF({...f,tanggal:e.target.value})}/></label><label>{t('holiday_name')}<input required value={f.nama} onChange={e=>setF({...f,nama:e.target.value})}/></label><label>{t('type')}<select value={f.tipe} onChange={e=>setF({...f,tipe:e.target.value})}><option>Nasional</option><option>Perusahaan</option></select></label></SimpleModal>}</>
@@ -2549,7 +2503,7 @@ function HolidayModule(){const {t}=useTranslation();
 function LeaveModule({initial}:{initial:MenuKey}){const {t}=useTranslation();
  const [tab,setTab]=useState(initial==='leave-balance'?'balance':'requests'),[rows,setRows]=useState<any[]>([]),[balances,setBalances]=useState<any[]>([]),[modal,setModal]=useState(false),[employees,setEmployees]=useState<Karyawan[]>([]);
  const [f,setF]=useState({id_karyawan:'',jenis:'Tahunan',tanggal_mulai:isoToday(),tanggal_selesai:isoToday(),jumlah_hari:'1',alasan:'',status:'Menunggu'});
- const load=async()=>{const [a,b,c]=await Promise.all([supabase.from('hris_cuti').select('*').order('created_at',{ascending:false}),supabase.from('hris_saldo_cuti').select('*').eq('tahun',new Date().getFullYear()),supabase.from('karyawan').select('*').order('nama')]);if(!a.error)setRows(a.data||[]);if(!b.error)setBalances(b.data||[]);if(!c.error)setEmployees(c.data||[])};useEffect(()=>{load()},[]);
+ const load=async()=>{if(!(await hasActiveSupabaseSession()))return; const [a,b,c]=await Promise.all([supabase.from('hris_cuti').select('*').order('created_at',{ascending:false}),supabase.from('hris_saldo_cuti').select('*').eq('tahun',new Date().getFullYear()),supabase.from('karyawan').select('*').order('nama')]);if(!a.error)setRows(a.data||[]);if(!b.error)setBalances(b.data||[]);if(!c.error)setEmployees(c.data||[])};useEffect(()=>watchSupabaseAuth(load),[]);
  const save=async(e:FormEvent)=>{e.preventDefault();const {data,error}=await supabase.from('hris_cuti').insert({...f,jumlah_hari:Number(f.jumlah_hari)}).select('id').single();if(error){await appAlert(error.message);return}if(data){const a=await supabase.rpc('hris_submit_approval',{p_modul:'leave',p_record_id:String(data.id)});if(a.error){await supabase.from('hris_cuti').delete().eq('id',data.id);await appAlert(a.error.message);return}}setModal(false);load()};
  const update=async(id:string,status:string)=>{const {data:req,error:e1}=await supabase.from('hris_approval_requests').select('id').eq('modul','leave').eq('record_id',id).eq('status','Menunggu').maybeSingle();if(e1||!req){await appAlert(e1?.message||t('approval_workflow_not_found'));return}const {error}=await supabase.rpc('hris_decide_approval',{p_id:req.id,p_status:status,p_catatan:status==='Ditolak'?(await appPrompt(t('rejection_reason_prompt'),'')||null):null});if(error)await appAlert(error.message);else load()};
  const ensureBalance=async(k:string)=>{const found=balances.find(x=>x.id_karyawan===k);if(found)return found;const {data,error}=await supabase.from('hris_saldo_cuti').insert({id_karyawan:k,tahun:new Date().getFullYear(),jenis:'Tahunan',saldo:12,terpakai:0}).select().single();if(error) return null;return data};
@@ -2559,7 +2513,7 @@ function LeaveModule({initial}:{initial:MenuKey}){const {t}=useTranslation();
 
 function TalentModule({initial,employees}:{initial:MenuKey;employees:Karyawan[]}){const {t}=useTranslation();
  const [tab,setTab]=useState(initial==='kpi'?'kpi':initial==='recruitment'?'vacancies':initial==='candidates'?'candidates':'performance'),[rows,setRows]=useState<any[]>([]),[modal,setModal]=useState(false);
- const load=async()=>{const table=tab==='kpi'?'hris_kpi':tab==='vacancies'?'hris_lowongan':tab==='candidates'?'hris_kandidat':tab==='interviews'?'hris_interview':'hris_performance';const {data,error}=await supabase.from(table).select('*').order('created_at',{ascending:false});if(!error)setRows(data||[]);else setRows([])};useEffect(()=>{load()},[tab]);
+ const load=async()=>{if(!(await hasActiveSupabaseSession()))return; const table=tab==='kpi'?'hris_kpi':tab==='vacancies'?'hris_lowongan':tab==='candidates'?'hris_kandidat':tab==='interviews'?'hris_interview':'hris_performance';const {data,error}=await supabase.from(table).select('*').order('created_at',{ascending:false});if(!error)setRows(data||[]);else setRows([])};useEffect(()=>watchSupabaseAuth(load),[tab]);
  const items=[
   ['performance',t('performance'),'arrow'],
   ['kpi',t('kpi_target'),'kpi'],
@@ -2577,8 +2531,62 @@ function TalentForm({tab,employees,onClose,onSaved}:{tab:string;employees:Karyaw
  const save=async(e:FormEvent)=>{e.preventDefault();const numeric=['target','realisasi','bobot','skor','jumlah_kebutuhan','nilai'];const payload={...f};numeric.forEach(k=>{if(k in payload)payload[k]=Number(payload[k]||0)});const {error}=await supabase.from(table).insert(payload);if(error)await appAlert(error.message);else onSaved()};
  return <SimpleModal title={`${t('add')} ${tab==='kpi'?t('kpi'):tab==='vacancies'?t('vacancies'):tab==='candidates'?t('candidates'):tab==='interviews'?t('interviews'):t('performance')}`} onClose={onClose} onSave={save}>{Object.entries(f).map(([k,v])=><label key={k}>{fieldLabel(k)}{k==='id_karyawan'?<select required value={String(v)} onChange={e=>setF({...f,[k]:e.target.value})}><option value="">{t('select_employee')}</option>{employees.map(x=><option key={x.id_karyawan} value={x.id_karyawan}>{x.nama} — {x.id_karyawan}</option>)}</select>:<input required={['nama','posisi','indikator','kandidat'].includes(k)} type={['target','realisasi','bobot','skor','jumlah_kebutuhan','nilai'].includes(k)?'number':k==='tanggal'||k.includes('tanggal')?'date':k==='jam'?'time':'text'} value={String(v??'')} onChange={e=>setF({...f,[k]:e.target.value})}/>}</label>)}</SimpleModal>
 }
-function Reports({employees,attendance,onExport}:{employees:Karyawan[];attendance:Absensi[];onExport:(r:any[],f:string)=>void}){const {t}=useTranslation();const [tab,setTab]=useState('overview'),[payroll,setPayroll]=useState<any[]>([]);useEffect(()=>{if(tab==='payroll')supabase.from('hris_payroll').select('*').order('created_at',{ascending:false}).limit(2000).then(({data})=>setPayroll(data||[]))},[tab]);const items=[['overview',t('analytics'),'report'],['attendance',t('attendance_report'),'clock'],['payroll',t('payroll_report'),'payroll'],['people',t('employee_report'),'users']].map(([key,label,icon])=>({key,label,icon}));return <Branch title={t('reports')} desc={t('reports_desc')} items={items} tab={tab} setTab={setTab}>{tab==='overview'?<div className="report-grid"><ReportCard name={t('master_employees')} count={employees.length} onClick={()=>onExport(employees,'laporan-karyawan.csv')}/><ReportCard name={t('attendance')} count={attendance.length} onClick={()=>onExport(attendance,'laporan-absensi.csv')}/><ReportCard name={t('payroll')} count={payroll.length} onClick={()=>onExport(payroll,'laporan-payroll.csv')}/></div>:tab==='attendance'?<ReportCard name={t('attendance_report')} count={attendance.length} onClick={()=>onExport(attendance,'laporan-absensi.csv')}/>:tab==='people'?<ReportCard name={t('employee_report')} count={employees.length} onClick={()=>onExport(employees,'laporan-karyawan.csv')}/>:<ReportCard name={t('payroll_report')} count={payroll.length} onClick={()=>onExport(payroll,'laporan-payroll.csv')}/>}</Branch>}
+function Reports({employees,attendance,onExport}:{employees:Karyawan[];attendance:Absensi[];onExport:(r:any[],f:string)=>void}){const {t}=useTranslation();const [tab,setTab]=useState('overview'),[payroll,setPayroll]=useState<any[]>([]);useEffect(()=>{if(tab!=='payroll')return;return watchSupabaseAuth(async()=>{const {data}=await supabase.from('hris_payroll').select('*').order('created_at',{ascending:false}).limit(2000);setPayroll(data||[])})},[tab]);const items=[['overview',t('analytics'),'report'],['attendance',t('attendance_report'),'clock'],['payroll',t('payroll_report'),'payroll'],['people',t('employee_report'),'users']].map(([key,label,icon])=>({key,label,icon}));return <Branch title={t('reports')} desc={t('reports_desc')} items={items} tab={tab} setTab={setTab}>{tab==='overview'?<div className="report-grid"><ReportCard name={t('master_employees')} count={employees.length} onClick={()=>onExport(employees,'laporan-karyawan.csv')}/><ReportCard name={t('attendance')} count={attendance.length} onClick={()=>onExport(attendance,'laporan-absensi.csv')}/><ReportCard name={t('payroll')} count={payroll.length} onClick={()=>onExport(payroll,'laporan-payroll.csv')}/></div>:tab==='attendance'?<ReportCard name={t('attendance_report')} count={attendance.length} onClick={()=>onExport(attendance,'laporan-absensi.csv')}/>:tab==='people'?<ReportCard name={t('employee_report')} count={employees.length} onClick={()=>onExport(employees,'laporan-karyawan.csv')}/>:<ReportCard name={t('payroll_report')} count={payroll.length} onClick={()=>onExport(payroll,'laporan-payroll.csv')}/>}</Branch>}
 function ReportCard({name,count,onClick}:{name:string;count:number;onClick:()=>void}){const {t}=useTranslation();return <div className="report-card"><span>{t('reports')||'LAPORAN'}</span><h3>{name}</h3><b>{count}</b><p>{t('data_available')||'data tersedia'}</p><button className="primary" onClick={onClick}>{t('export_csv')||'Export CSV'}</button></div>}
+function ThemeControl({ userRole }: { userRole: string }) {
+  const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState<CosmicThemeId>(() => getCosmicTheme());
+
+  useEffect(() => {
+    let active = true;
+    const load = async () => {
+      const { data: session } = await supabase.auth.getSession();
+      const userId = session.session?.user?.id;
+      if (!userId) return;
+      const next = await loadUserThemePreference(userId);
+      if (!active) return;
+      setTheme(next);
+      applyCosmicTheme(next, false);
+    };
+    void load();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const chooseTheme = async (next: CosmicThemeId) => {
+    setTheme(next);
+    applyCosmicTheme(next, false);
+
+    const { data: session } = await supabase.auth.getSession();
+    const userId = session.session?.user?.id;
+    if (userId) {
+      await saveUserThemePreference(userId, next);
+      if (userRole.trim().toLowerCase() === 'super admin') {
+        await setEmployeePortalTheme(next);
+      }
+    }
+    setOpen(false);
+  };
+
+  return (
+    <div className="theme-control">
+      <button type="button" className="icon-btn theme-control-button" aria-label="Pilih tema" aria-expanded={open} title="Tema" onClick={() => setOpen(value => !value)}>◫</button>
+      {open && (
+        <div className="theme-control-menu" role="menu" aria-label="Pilih tema">
+          {(['sun','moon','galaxy','blackhole','nebula'] as CosmicThemeId[]).map(id => (
+            <button key={id} type="button" className={`theme-control-option ${theme === id ? 'active' : ''}`} role="menuitemradio" aria-checked={theme === id} onClick={() => void chooseTheme(id)}>
+              <span className={`theme-control-dot cosmic-theme-${id}`} aria-hidden="true" />
+              <span>{COSMIC_THEMES[id].name}</span>
+              {theme === id && <b>✓</b>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Settings({
   canManageThemes = false
 }: {
@@ -2711,11 +2719,11 @@ function Settings({
     return () => window.removeEventListener('project-tirta-theme-change', handleTheme);
   }, []);
 
-  const applyTheme=(input:Partial<ThemeDefinition>,persist=true)=>{
+  const applyTheme=async(input:Partial<ThemeDefinition>,persist=true)=>{
     const theme=normalizeTheme(input);
     const root=document.documentElement;
     if (theme.id in COSMIC_THEMES) {
-      applyCosmicTheme(theme.id as CosmicThemeId, persist);
+      applyCosmicTheme(theme.id as CosmicThemeId, false);
       setActiveThemeId(theme.id);
     }
     const pageText = getReadableText(theme.background, '#172033');
@@ -2781,7 +2789,16 @@ function Settings({
     });
     setActiveThemeId(theme.id);
     if(persist){
-      localStorage.setItem('moonx-theme',JSON.stringify(theme));
+      const { data: session } = await supabase.auth.getSession();
+      const userId = session.session?.user?.id;
+      if (userId) {
+        if (theme.id in COSMIC_THEMES) {
+          await saveUserThemePreference(userId, theme.id as CosmicThemeId);
+          if (canManageThemes) await setEmployeePortalTheme(theme.id as CosmicThemeId);
+        } else {
+          saveCustomThemeCache(userId, theme);
+        }
+      }
       setMsg(`Tema "${theme.name || 'Tema Kustom'}" berhasil diterapkan.`);
     }
   };
@@ -2789,15 +2806,21 @@ function Settings({
   const updateCustomColor=(key:keyof typeof customTheme,value:string)=>{
     if(!isHexColor(value)) return;
     setCustomTheme(prev=>({...prev,[key]:value}));
-    applyTheme({id:'custom',name:'Tema Kustom',description:'Tema kustom Project by Tirta',...customTheme,[key]:value},false);
+    void applyTheme({id:'custom',name:'Tema Kustom',description:'Tema kustom Project by Tirta',...customTheme,[key]:value},false);
     setActiveThemeId('custom');
   };
 
   useEffect(()=>{
     supabase.from('hris_company_settings').select('*').eq('id',1).maybeSingle().then(({data})=>{if(data)setF(data);});
-    const cosmic = getCosmicTheme();
-    applyCosmicTheme(cosmic, false);
-    setActiveThemeId(cosmic);
+    const loadTheme = async () => {
+      const { data: session } = await supabase.auth.getSession();
+      const userId = session.session?.user?.id;
+      if (!userId) return;
+      const cosmic = await loadUserThemePreference(userId);
+      applyCosmicTheme(cosmic, false);
+      setActiveThemeId(cosmic);
+    };
+    void loadTheme();
   },[canManageThemes]);
   const save=async()=>{
     const {error}=await supabase.from('hris_company_settings').upsert({...f,id:1});
@@ -2805,7 +2828,7 @@ function Settings({
   };
 
   const saveCustomTheme=()=>{
-    applyTheme({id:'custom',name:'Tema Kustom',description:'Tema kustom Project by Tirta',...customTheme},true);
+    void applyTheme({id:'custom',name:'Tema Kustom',description:'Tema kustom Project by Tirta',...customTheme},true);
     setMsg('Tema kustom berhasil disimpan dan diterapkan.');
   };
 
@@ -2918,7 +2941,7 @@ function Settings({
                 key={theme.id}
                 className={`theme-card ${activeThemeId===theme.id?'active':''}`}
                 aria-pressed={activeThemeId===theme.id}
-                onClick={()=>applyTheme(theme,true)}
+                onClick={()=>void applyTheme(theme,true)}
               >
                 <div
                   className="theme-preview"
@@ -3763,8 +3786,8 @@ function Audit() {
     </>
   );
 }
-function Notifications(){const { t } = useTranslation(); const [rows,setRows]=useState<any[]>([]),[loading,setLoading]=useState(true),[email,setEmail]=useState('');const load=async()=>{setLoading(true);const {data:userData}=await supabase.auth.getUser();const currentEmail=userData.user?.email||'';setEmail(currentEmail);if(!currentEmail){setRows([]);setLoading(false);return;}const {data}=await supabase.from('hris_notifications').select('*').eq('recipient_email',currentEmail).order('created_at',{ascending:false}).limit(100);setRows(data||[]);setLoading(false)};useEffect(()=>{void load()},[]);const mark=async(id:string)=>{if(!email)return;await supabase.from('hris_notifications').update({is_read:true}).eq('id',id).eq('recipient_email',email);load()};return <><Heading title={t('notifications')} desc={t('notifications_center_desc')} /><div className="panel table-panel"><div className="panel-head"><div><h2>{t('hr_inbox')}</h2><p>{rows.filter(r=>!r.is_read).length} {t('unread')}</p></div><button className="secondary" onClick={load}>{t('reload')}</button></div><div className="notification-list">{loading?<div className="loading">{t('loading')}</div>:rows.length?rows.map(r=><button key={r.id} className={`notification-item ${r.is_read?'read':''}`} onClick={()=>mark(r.id)}><span className="notification-dot"/><span><b>{r.title}</b><small>{r.message}</small><em>{r.created_at?.replace('T',' ').slice(0,19)}</em></span></button>):<div className="empty-module"><h3>{t('no_notifications')}</h3><p>{t('notifications_appear_here')}</p></div>}</div></div></>}
-function SystemHealth(){const { t } = useTranslation(); const [h,setH]=useState<any>(null),[err,setErr]=useState('');const load=async()=>{const {data,error}=await supabase.from('hris_system_health').select('*').maybeSingle();if(error)setErr(error.message);else setH(data)};useEffect(()=>{load()},[]);const cards=[['active_employees',t('active_employees')],['pending_leave',t('pending_leave')],['pending_overtime',t('pending_overtime')],['pending_payroll',t('pending_payroll')],['pending_approvals',t('pending_approvals')],['unread_notifications',t('unread_notifications')]];return <><Heading title={t('system_health')} desc={t('system_health_desc')} action={t('reload')} onAction={load}/>{err&&<div className="alert">{err}</div>}<div className="mini-kpi-row">{cards.map(([k,l])=><div className="stat-card" key={k}><span>{l}</span><strong>{h?.[k]??'—'}</strong></div>)}</div><div className="panel"><h3>{t('service_status')}</h3><p>{t('database')}: <b>{h?t('operational'):t('checking')}</b></p><p>{t('last_checked')}: {h?.checked_at?.replace('T',' ').slice(0,19)||'—'}</p></div></>}
+function Notifications(){const { t } = useTranslation(); const [rows,setRows]=useState<any[]>([]),[loading,setLoading]=useState(true),[email,setEmail]=useState('');const load=async()=>{setLoading(true);if(!(await hasActiveSupabaseSession())){setRows([]);setLoading(false);return;}const {data:userData}=await supabase.auth.getUser();const currentEmail=userData.user?.email||'';setEmail(currentEmail);if(!currentEmail){setRows([]);setLoading(false);return;}const {data}=await supabase.from('hris_notifications').select('*').eq('recipient_email',currentEmail).order('created_at',{ascending:false}).limit(100);setRows(data||[]);setLoading(false)};useEffect(()=>watchSupabaseAuth(load),[]);const mark=async(id:string)=>{if(!email)return;await supabase.from('hris_notifications').update({is_read:true}).eq('id',id).eq('recipient_email',email);load()};return <><Heading title={t('notifications')} desc={t('notifications_center_desc')} /><div className="panel table-panel"><div className="panel-head"><div><h2>{t('hr_inbox')}</h2><p>{rows.filter(r=>!r.is_read).length} {t('unread')}</p></div><button className="secondary" onClick={load}>{t('reload')}</button></div><div className="notification-list">{loading?<div className="loading">{t('loading')}</div>:rows.length?rows.map(r=><button key={r.id} className={`notification-item ${r.is_read?'read':''}`} onClick={()=>mark(r.id)}><span className="notification-dot"/><span><b>{r.title}</b><small>{r.message}</small><em>{r.created_at?.replace('T',' ').slice(0,19)}</em></span></button>):<div className="empty-module"><h3>{t('no_notifications')}</h3><p>{t('notifications_appear_here')}</p></div>}</div></div></>}
+function SystemHealth(){const { t } = useTranslation(); const [h,setH]=useState<any>(null),[err,setErr]=useState('');const load=async()=>{if(!(await hasActiveSupabaseSession()))return;const {data,error}=await supabase.from('hris_system_health').select('*').maybeSingle();if(error)setErr(error.message);else setH(data)};useEffect(()=>watchSupabaseAuth(load),[]);const cards=[['active_employees',t('active_employees')],['pending_leave',t('pending_leave')],['pending_overtime',t('pending_overtime')],['pending_payroll',t('pending_payroll')],['pending_approvals',t('pending_approvals')],['unread_notifications',t('unread_notifications')]];return <><Heading title={t('system_health')} desc={t('system_health_desc')} action={t('reload')} onAction={load}/>{err&&<div className="alert">{err}</div>}<div className="mini-kpi-row">{cards.map(([k,l])=><div className="stat-card" key={k}><span>{l}</span><strong>{h?.[k]??'—'}</strong></div>)}</div><div className="panel"><h3>{t('service_status')}</h3><p>{t('database')}: <b>{h?t('operational'):t('checking')}</b></p><p>{t('last_checked')}: {h?.checked_at?.replace('T',' ').slice(0,19)||'—'}</p></div></>}
 
 function SimpleModal({title,onClose,onSave,children}:{title:string;onClose:()=>void;onSave:(e:FormEvent)=>void;children:ReactNode}){return <div className="drawer-backdrop"><aside className="edit-drawer"><div className="drawer-head"><h2>{title}</h2><button className="icon-btn" onClick={onClose}>×</button></div><form className="drawer-body" onSubmit={onSave}>{children}<div className="drawer-foot"><button type="button" className="secondary" onClick={onClose}>Batal</button><button className="primary">Simpan</button></div></form></aside></div>}
 function Status({value}:{value:string}){const v=value.toLowerCase();const cls=v.includes('non')||v.includes('tolak')||v.includes('sakit')?'red':v.includes('terlambat')||v.includes('draft')||v.includes('menunggu')?'orange':v.includes('izin')?'blue':'green';return <span className={`status ${cls}`}>{value}</span>}

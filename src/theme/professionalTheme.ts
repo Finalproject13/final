@@ -1825,6 +1825,165 @@ html[data-cosmic-theme="nebula"] .employee-portal::before {
   html[data-cosmic-theme="nebula"] .employee-portal::before { animation:none !important; }
 }
 
+
+/* =========================================================
+   PROJECT BY TIRTA — EMPLOYEE DARK ENTERPRISE LOCK
+   Portal karyawan tidak mengikuti tema Admin/HRD/Super Admin.
+   ========================================================= */
+
+.employee-login,
+.employee-portal {
+  --navy: #0b1222 !important;
+  --navy-2: #172033 !important;
+  --gold: #d6ae58 !important;
+  --gold-light: #f0d68c !important;
+  --muted: #aeb7c5 !important;
+  --line: #d6ae58 !important;
+  --bg: #071126 !important;
+
+  --app-primary: #0b1222 !important;
+  --app-primary-contrast: #f8fafc !important;
+  --app-accent: #d6ae58 !important;
+  --app-bg: #071126 !important;
+  --app-surface: #101827 !important;
+  --app-surface-alt: #172033 !important;
+  --app-text: #e2e5ea !important;
+  --app-muted: #aeb7c5 !important;
+  --app-border: #d6ae58 !important;
+}
+
+.employee-portal,
+.employee-login {
+  background: #071126 !important;
+  color: #e2e5ea !important;
+}
+
+.employee-topbar {
+  background: #101827 !important;
+  color: #e2e5ea !important;
+  border-bottom: 2px solid #d6ae58 !important;
+}
+
+
+/* =========================================================
+   PROJECT BY TIRTA — SIDEBAR FOLLOWS COSMIC THEME
+   Struktur/layout sidebar tetap, warna dan ambience mengikuti tema.
+   ========================================================= */
+
+.talenta-shell .sidebar,
+.talenta-shell .talenta-sidebar {
+  color: #f8fafc !important;
+  border-right-width: 2px !important;
+  border-right-style: solid !important;
+  backdrop-filter: blur(24px) saturate(145%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(145%) !important;
+  transition: background .35s ease, border-color .35s ease, box-shadow .35s ease !important;
+}
+
+html[data-cosmic-theme="sun"] .talenta-shell .sidebar,
+html[data-cosmic-theme="sun"] .talenta-shell .talenta-sidebar {
+  background:
+    radial-gradient(circle at 18% 8%, rgba(246,199,103,.16), transparent 30%),
+    linear-gradient(180deg, #321b0b 0%, #170c05 52%, #090503 100%) !important;
+  border-right-color: #f6c767 !important;
+  box-shadow: 18px 0 56px rgba(255,152,93,.10), inset -1px 0 rgba(246,199,103,.16) !important;
+}
+
+html[data-cosmic-theme="moon"] .talenta-shell .sidebar,
+html[data-cosmic-theme="moon"] .talenta-shell .talenta-sidebar {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(131,189,251,.13), transparent 30%),
+    linear-gradient(180deg, #0b1d35 0%, #061326 52%, #020712 100%) !important;
+  border-right-color: #e4d1a0 !important;
+  box-shadow: 18px 0 56px rgba(131,189,251,.08), inset -1px 0 rgba(228,209,160,.16) !important;
+}
+
+html[data-cosmic-theme="galaxy"] .talenta-shell .sidebar,
+html[data-cosmic-theme="galaxy"] .talenta-shell .talenta-sidebar {
+  background:
+    radial-gradient(circle at 78% 12%, rgba(122,169,255,.16), transparent 28%),
+    linear-gradient(180deg, #24114a 0%, #12082d 52%, #04020c 100%) !important;
+  border-right-color: #d7adff !important;
+  box-shadow: 18px 0 62px rgba(122,169,255,.10), inset -1px 0 rgba(215,173,255,.18) !important;
+}
+
+html[data-cosmic-theme="blackhole"] .talenta-shell .sidebar,
+html[data-cosmic-theme="blackhole"] .talenta-shell .talenta-sidebar {
+  background:
+    radial-gradient(circle at 82% 10%, rgba(99,215,255,.13), transparent 25%),
+    linear-gradient(180deg, #0b0e14 0%, #05070b 52%, #010204 100%) !important;
+  border-right-color: #e8c36f !important;
+  box-shadow: 18px 0 62px rgba(99,215,255,.08), inset -1px 0 rgba(232,195,111,.18) !important;
+}
+
+html[data-cosmic-theme="nebula"] .talenta-shell .sidebar,
+html[data-cosmic-theme="nebula"] .talenta-shell .talenta-sidebar {
+  background:
+    radial-gradient(circle at 82% 12%, rgba(255,191,232,.15), transparent 28%),
+    radial-gradient(circle at 18% 72%, rgba(113,213,255,.10), transparent 30%),
+    linear-gradient(180deg, #2a0e2b 0%, #130718 52%, #04030a 100%) !important;
+  border-right-color: #ffbfe8 !important;
+  box-shadow: 18px 0 62px rgba(255,191,232,.08), inset -1px 0 rgba(255,191,232,.18) !important;
+}
+
+/* Sidebar headings/branding remain readable in every theme. */
+.talenta-shell .sidebar .brand,
+.talenta-shell .sidebar .sidebar-head,
+.talenta-shell .talenta-sidebar .brand,
+.talenta-shell .talenta-sidebar .sidebar-head {
+  background: transparent !important;
+  color: #f8fafc !important;
+}
+
+.talenta-shell .sidebar .nav-item,
+.talenta-shell .talenta-sidebar .nav-item {
+  color: #e6edf6 !important;
+}
+
+.talenta-shell .sidebar .nav-item:hover,
+.talenta-shell .talenta-sidebar .nav-item:hover {
+  color: #ffffff !important;
+  background: rgba(255,255,255,.06) !important;
+}
+
+.talenta-shell .sidebar .nav-item.active,
+.talenta-shell .talenta-sidebar .nav-item.active {
+  color: var(--pt-bg-deep, #07111f) !important;
+  border-color: var(--pt-accent) !important;
+  background: linear-gradient(135deg, var(--pt-accent), color-mix(in srgb, var(--pt-accent) 62%, #fff 38%)) !important;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--pt-accent) 22%, transparent) !important;
+}
+
+@media (max-width: 760px) {
+  .talenta-shell .sidebar,
+  .talenta-shell .talenta-sidebar {
+    border-right-width: 1px !important;
+  }
+}
+
+/* Project by Tirta — account-scoped theme control */
+.theme-control { position: relative; display: inline-flex; align-items: center; }
+.theme-control-button { position: relative; }
+.theme-control-menu {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 250;
+  min-width: 190px; padding: 8px; border: 1px solid var(--mx-border, #d6ae58);
+  border-radius: 12px; background: var(--mx-surface, #101827); color: var(--mx-text, #f8fafc);
+  box-shadow: 0 18px 44px rgba(0,0,0,.35);
+}
+.theme-control-option {
+  width: 100%; min-height: 36px; display: flex; align-items: center; gap: 9px;
+  padding: 7px 9px; border: 0; border-radius: 8px; background: transparent;
+  color: var(--mx-text, #f8fafc); text-align: left;
+}
+.theme-control-option:hover, .theme-control-option.active { background: rgba(214,174,88,.12); }
+.theme-control-option b { margin-left: auto; }
+.theme-control-dot { width: 15px; height: 15px; display: inline-block; border-radius: 50%; border: 1px solid rgba(255,255,255,.45); }
+.theme-control .cosmic-theme-sun { background: linear-gradient(135deg,#f6c767,#ff985d); }
+.theme-control .cosmic-theme-moon { background: linear-gradient(135deg,#dfe8f4,#586f92); }
+.theme-control .cosmic-theme-galaxy { background: linear-gradient(135deg,#d7adff,#4f62ff); }
+.theme-control .cosmic-theme-blackhole { background: linear-gradient(135deg,#050608,#63d7ff); }
+.theme-control .cosmic-theme-nebula { background: linear-gradient(135deg,#ffbfe8,#71d5ff); }
+
 `;
 
 export const COSMIC_THEMES = {
@@ -1865,7 +2024,7 @@ export const COSMIC_THEMES = {
   }
 } as const;
 export type CosmicThemeId = keyof typeof COSMIC_THEMES;
-const THEME_STORAGE_KEY = 'project-tirta-cosmic-theme';
+const THEME_STORAGE_KEY = 'project-tirta-cosmic-theme-legacy';
 
 export function installProjectByTirtaTheme(): void {
   if (typeof document === 'undefined') return;
@@ -1878,9 +2037,11 @@ export function installProjectByTirtaTheme(): void {
 }
 
 export function getCosmicTheme(): CosmicThemeId {
-  if (typeof localStorage === 'undefined') return 'sun';
-  const saved = localStorage.getItem(THEME_STORAGE_KEY);
-  return saved && saved in COSMIC_THEMES ? saved as CosmicThemeId : 'sun';
+  if (typeof document !== 'undefined') {
+    const current = document.documentElement.dataset.cosmicTheme;
+    if (current && current in COSMIC_THEMES) return current as CosmicThemeId;
+  }
+  return 'sun';
 }
 
 export function applyCosmicTheme(themeId: CosmicThemeId, persist = true): void {
@@ -1900,10 +2061,19 @@ export function applyCosmicTheme(themeId: CosmicThemeId, persist = true): void {
   root.style.setProperty('--mx-border', theme.accent);
   root.style.setProperty('--mx-border-strong', theme.accent);
   root.style.setProperty('--mx-focus', theme.accent);
-  root.style.setProperty('--mx-sidebar', '#040914');
-  root.style.setProperty('--mx-sidebar-text', '#f8fafc');
+  const sidebarColors: Record<CosmicThemeId, { background: string; text: string; muted: string; activeText: string }> = {
+    sun: { background: '#351808', text: '#fff8ed', muted: '#e8cda6', activeText: '#2a1608' },
+    moon: { background: '#06142d', text: '#f5f7fb', muted: '#afbed3', activeText: '#07111f' },
+    galaxy: { background: '#160b31', text: '#fbf8ff', muted: '#ccbce7', activeText: '#180b29' },
+    blackhole: { background: '#020408', text: '#f4f8fb', muted: '#a9bac4', activeText: '#07111f' },
+    nebula: { background: '#240a2b', text: '#fff5fc', muted: '#d5bdd3', activeText: '#21091e' },
+  };
+  const sidebar = sidebarColors[themeId];
+  root.style.setProperty('--mx-sidebar', sidebar.background);
+  root.style.setProperty('--mx-sidebar-text', sidebar.text);
+  root.style.setProperty('--mx-sidebar-muted', sidebar.muted);
   root.style.setProperty('--mx-sidebar-active', theme.accent);
-  root.style.setProperty('--mx-sidebar-active-text', '#07111f');
+  root.style.setProperty('--mx-sidebar-active-text', sidebar.activeText);
   root.style.setProperty('--app-accent', theme.accent);
   root.style.setProperty('--app-bg', theme.base);
   root.style.setProperty('--app-surface', theme.base);
@@ -1914,5 +2084,5 @@ export function applyCosmicTheme(themeId: CosmicThemeId, persist = true): void {
 
 export function initializeCosmicTheme(): void {
   installProjectByTirtaTheme();
-  applyCosmicTheme(getCosmicTheme(), false);
+  applyCosmicTheme('sun', false);
 }

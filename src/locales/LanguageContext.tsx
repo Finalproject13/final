@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { translations } from './translations';
+import { supabase } from '../lib/supabase/client';
 
 export const SUPPORTED_LANGUAGES = [
   { code: 'id', name: 'Indonesia', nativeName: 'Indonesia' },
@@ -12,7 +13,8 @@ export const SUPPORTED_LANGUAGES = [
 export type LanguageCode = typeof SUPPORTED_LANGUAGES[number]['code'];
 
 const DEFAULT_LANGUAGE: LanguageCode = 'id';
-const STORAGE_KEY = 'moonx-language';
+const ANONYMOUS_STORAGE_KEY = 'project-tirta-language-anonymous';
+const USER_STORAGE_PREFIX = 'project-tirta-language-user:';
 
 const LANGUAGE_CODES = new Set<string>(
   SUPPORTED_LANGUAGES.map(({ code }) => code)
@@ -36,17 +38,66 @@ export function LanguageProvider({
   children: React.ReactNode;
 }) {
   const [lang, setLangState] = useState<LanguageCode>(DEFAULT_LANGUAGE);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
+    let active = true;
 
-      if (isSupportedLanguage(saved)) {
-        setLangState(saved);
+    const loadForUser = async (nextUserId: string | null) => {
+      setUserId(nextUserId);
+
+      if (!nextUserId) {
+        try {
+          const saved = localStorage.getItem(ANONYMOUS_STORAGE_KEY);
+          setLangState(isSupportedLanguage(saved) ? saved : DEFAULT_LANGUAGE);
+        } catch {
+          setLangState(DEFAULT_LANGUAGE);
+        }
+        return;
       }
-    } catch (error) {
-      console.warn('Unable to load language preference:', error);
-    }
+
+      try {
+        const cached = localStorage.getItem(USER_STORAGE_PREFIX + nextUserId);
+        if (isSupportedLanguage(cached)) setLangState(cached);
+      } catch {
+        // Cache is optional; Supabase remains the source of truth.
+      }
+
+      const { data, error } = await supabase
+        .from('hris_user_preferences')
+        .select('language')
+        .eq('user_id', nextUserId)
+        .maybeSingle();
+
+      if (!active) return;
+
+      if (!error && isSupportedLanguage(data?.language)) {
+        setLangState(data.language);
+        try {
+          localStorage.setItem(USER_STORAGE_PREFIX + nextUserId, data.language);
+        } catch {
+          // Cache is optional.
+        }
+      }
+    };
+
+    const bootstrap = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (active) await loadForUser(data.session?.user?.id ?? null);
+    };
+
+    void bootstrap();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      window.setTimeout(() => {
+        if (active) void loadForUser(session?.user?.id ?? null);
+      }, 0);
+    });
+
+    return () => {
+      active = false;
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   const setLang = async (newLang: LanguageCode) => {
@@ -55,7 +106,16 @@ export function LanguageProvider({
     setLangState(newLang);
 
     try {
-      localStorage.setItem(STORAGE_KEY, newLang);
+      if (userId) {
+        localStorage.setItem(USER_STORAGE_PREFIX + userId, newLang);
+        const { error } = await supabase
+          .from('hris_user_preferences')
+          .upsert({ user_id: userId, language: newLang }, { onConflict: 'user_id' });
+
+        if (error) console.warn('Unable to persist account language preference:', error);
+      } else {
+        localStorage.setItem(ANONYMOUS_STORAGE_KEY, newLang);
+      }
     } catch (error) {
       console.warn('Unable to persist language preference:', error);
     }
@@ -73,7 +133,6 @@ export function LanguageProvider({
     </LanguageContext.Provider>
   );
 }
-
 export function useTranslation() {
   const context = useContext(LanguageContext);
 

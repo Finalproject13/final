@@ -3,9 +3,10 @@ import { isSupabaseConfigured, supabase } from './lib/supabase/client';
 import { signIn } from './lib/auth';
 import { checkForAppUpdate } from './lib/app-update';
 import { useTranslation } from './locales/LanguageContext';
+import { loadUserThemePreference, getEmployeePortalTheme } from './lib/userPreferences';
 
 import moonLogo from './assets/moon-logo.svg';
-import { COSMIC_THEMES, applyCosmicTheme, getCosmicTheme, initializeCosmicTheme, type CosmicThemeId } from './theme/professionalTheme';
+import { applyCosmicTheme, initializeCosmicTheme } from './theme/professionalTheme';
 
 import AdminDashboard from './pages/AdminDashboard/AdminDashboard';
 import EmployeeRegister from './pages/EmployeeRegister/EmployeeRegister';
@@ -256,6 +257,14 @@ export default function App() {
 
       setView(account.view);
 
+      if (data.session.user.id) {
+        if (account.view === 'employee') {
+          applyCosmicTheme(await getEmployeePortalTheme(), false);
+        } else if (account.view === 'admin') {
+          applyCosmicTheme(await loadUserThemePreference(data.session.user.id), false);
+        }
+      }
+
       window.location.hash = `/${account.view}`;
 
       setChecking(false);
@@ -310,6 +319,15 @@ export default function App() {
             if (!active) return;
 
             setView(account.view);
+
+            if (session.user.id) {
+              if (account.view === 'employee') {
+                applyCosmicTheme(await getEmployeePortalTheme(), false);
+              } else if (account.view === 'admin') {
+                applyCosmicTheme(await loadUserThemePreference(session.user.id), false);
+              }
+            }
+
             setPassword('');
             setError('');
             setChecking(false);
@@ -372,6 +390,14 @@ export default function App() {
 
     setView(account.view);
 
+    if (data.user.id) {
+      if (account.view === 'employee') {
+        applyCosmicTheme(await getEmployeePortalTheme(), false);
+      } else if (account.view === 'admin') {
+        applyCosmicTheme(await loadUserThemePreference(data.user.id), false);
+      }
+    }
+
     setLoading(false);
     setPassword('');
     setError('');
@@ -396,7 +422,7 @@ export default function App() {
 
       <div className="app-root">
 
-        {(view === 'admin' || view === 'employee') && <CosmicThemeSwitcher />} 
+        {/* Employee Portal follows the Super Admin portal theme and has no personal theme selector. */}
 
         {/* =================================================
             LOGIN
@@ -472,32 +498,6 @@ export default function App() {
   );
 }
 
-
-function CosmicThemeSwitcher() {
-  const [theme, setTheme] = useState<CosmicThemeId>(() => getCosmicTheme());
-
-  useEffect(() => {
-    const handleTheme = (event: Event) => {
-      const next = (event as CustomEvent<CosmicThemeId>).detail;
-      if (next && next in COSMIC_THEMES) setTheme(next);
-    };
-    window.addEventListener('project-tirta-theme-change', handleTheme);
-    return () => window.removeEventListener('project-tirta-theme-change', handleTheme);
-  }, []);
-
-  return (
-    <div className="cosmic-theme-global-dock" aria-label="Tema Project by Tirta">
-      <span className="cosmic-theme-global-label">Semesta</span>
-      {(['sun', 'moon', 'galaxy', 'blackhole', 'nebula'] as CosmicThemeId[]).map((id) => (
-        <button key={id} type="button" className={theme === id ? 'active' : ''}
-          title={COSMIC_THEMES[id].name} aria-label={`Tema ${COSMIC_THEMES[id].name}`}
-          onClick={() => { applyCosmicTheme(id); setTheme(id); }}>
-          <span className={`cosmic-theme-swatch cosmic-theme-${id}`} aria-hidden="true" />
-        </button>
-      ))}
-    </div>
-  );
-}
 
 function AppLoadingScreen({ message }: { message: string }) {
   return (

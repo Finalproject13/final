@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from '../../../locales/LanguageContext';
 import { supabase } from '../../../lib/supabase/client';
+import { getEmployeePortalTheme } from '../../../lib/userPreferences';
+import { applyCosmicTheme } from '../../../theme/professionalTheme';
 
 import moonLogo from '../../../assets/moon-logo.svg';
 import SuggestionBox from '../../../features/employee-feedback/SuggestionBox';
@@ -20,6 +22,27 @@ export default function PortalKaryawan({onLogout}:{onLogout?:()=>void}){
  const locale=lang==='id'?'id-ID':lang==='ja'?'ja-JP':lang==='ko'?'ko-KR':'zh-CN';
  const [user,setUser]=useState<any>(null),[employee,setEmployee]=useState<Employee|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[tab,setTab]=useState<Tab>('home');
  const [attendance,setAttendance]=useState<any[]>([]),[leaves,setLeaves]=useState<any[]>([]),[balances,setBalances]=useState<any[]>([]),[payroll,setPayroll]=useState<any[]>([]),[lines,setLines]=useState<Record<string,any[]>>({}),[schedule,setSchedule]=useState<any[]>([]),[otRequests,setOtRequests]=useState<any[]>([]),[announcements,setAnnouncements]=useState<any[]>([]),[announcementReadIds,setAnnouncementReadIds]=useState<string[]>([]),[payslipReadIds,setPayslipReadIds]=useState<string[]>([]),[feedbackReadIds,setFeedbackReadIds]=useState<string[]>([]);
+  // Employee Portal follows Super Admin's theme only.
+  // Employee language remains independently controlled by its own account.
+  useEffect(() => {
+    let active = true;
+
+    const applyEmployeeTheme = async () => {
+      const next = await getEmployeePortalTheme();
+      if (active) applyCosmicTheme(next, false);
+    };
+
+    void applyEmployeeTheme();
+    const timer = window.setInterval(() => {
+      void applyEmployeeTheme();
+    }, 15000);
+
+    return () => {
+      active = false;
+      window.clearInterval(timer);
+    };
+  }, []);
+
  const [geo,setGeo]=useState<Geo|null>(null),[geoLoading,setGeoLoading]=useState(false),[cameraOn,setCameraOn]=useState(false),[cameraReady,setCameraReady]=useState(false),[cameraError,setCameraError]=useState(''),[selfie,setSelfie]=useState(''),[clockBusy,setClockBusy]=useState(false);
  const videoRef=useRef<HTMLVideoElement>(null),streamRef=useRef<MediaStream|null>(null);
  const [leaveForm,setLeaveForm]=useState({jenis:'Tahunan',tanggal_mulai:today(),tanggal_selesai:today(),alasan:''});
