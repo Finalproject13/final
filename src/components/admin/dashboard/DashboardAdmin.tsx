@@ -1750,29 +1750,40 @@ function NewEmployees({data,onRefresh}:{data:Karyawan[];onRefresh:()=>void}) {
   const decide=async(decision:'Terima'|'Tolak')=>{
     if(!selected) return;
     setBusy(true);
-    const update = decision==='Terima'
-      ? { status_aktif:true, status_karyawan: selected.status_karyawan && selected.status_karyawan !== 'Menunggu Verifikasi' ? selected.status_karyawan : 'Tetap' }
-      : { status_aktif:false, status_karyawan:'Ditolak' };
-    const {error}=await supabase.from('karyawan').update(update).eq('id',selected.id);
-    if(error){ await appAlert(error.message); setBusy(false); return; }
 
-    const { data: authData } = await supabase.auth.getUser();
-    await supabase
-      .from('hris_approval_requests')
-      .update({
-        status: decision === 'Terima' ? 'Disetujui' : 'Ditolak',
-        decided_by: authData.user?.email || null,
-        decided_at: new Date().toISOString(),
-        catatan: decision === 'Terima' ? 'Registrasi karyawan disetujui.' : 'Registrasi karyawan ditolak.'
-      })
-      .eq('modul','employee_registration')
-      .eq('record_id',selected.id_karyawan || '')
-      .eq('status','Menunggu');
+    const { data, error } = await supabase.functions.invoke('approve-employee-registration', {
+      body: {
+        employee_id: selected.id_karyawan || '',
+        decision,
+      },
+    });
 
-    setSelected(null); setBusy(false); onRefresh();
-  };
+    if (error) {
+      let message = error.message || 'Gagal memproses persetujuan registrasi.';
+      try {
+        const context = (error as any).context;
+        if (context) {
+          const payload = await context.json();
+          if (payload?.error) message = payload.error;
+        }
+      } catch {
+        // Gunakan pesan error standar dari invoke.
+      }
+      await appAlert(message);
+      setBusy(false);
+      return;
+    }
 
-  return <>
+    if (!data?.ok) {
+      await appAlert(data?.error || 'Gagal memproses persetujuan registrasi.');
+      setBusy(false);
+      return;
+    }
+
+    setSelected(null);
+    setBusy(false);
+    onRefresh();
+  };  return <>
     <Heading title={t('admin_new_employee')} desc={t('admin_new_employee_desc')} />
     <div className="toolbar"><b>{data.length} {t('admin_pending_registrations')}</b></div>
     <div className="panel table-panel"><div className="table-wrap"><table><thead><tr><th>{t('photo')}</th><th>{t('name')}</th><th>{t('employee_id')}</th><th>{t('department')}</th><th>{t('position')}</th><th>{t('registration_date')}</th><th>{t('actions')}</th></tr></thead><tbody>
