@@ -10,9 +10,6 @@ const isTheme = (value: unknown): value is CosmicThemeId =>
   typeof value === 'string' &&
   ['sun', 'moon', 'galaxy', 'blackhole', 'nebula'].includes(value);
 
-const isLanguage = (value: unknown): value is LanguageCode =>
-  typeof value === 'string' &&
-  ['id', 'en', 'ja', 'ko', 'zh'].includes(value);
 
 function safeGet(key: string): string | null {
   try { return localStorage.getItem(key); } catch { return null; }
@@ -44,21 +41,6 @@ export async function saveUserThemePreference(userId: string, theme: CosmicTheme
     { onConflict: 'user_id' }
   );
   if (error) console.warn('Unable to save account theme preference:', error);
-}
-
-export async function loadUserLanguagePreference(userId: string): Promise<LanguageCode> {
-  const cached = safeGet(LANGUAGE_PREFIX + userId);
-  const fallback: LanguageCode = isLanguage(cached) ? cached : 'id';
-  try {
-    const { data } = await supabase.from('hris_user_preferences').select('language').eq('user_id', userId).maybeSingle();
-    if (isLanguage(data?.language)) {
-      safeSet(LANGUAGE_PREFIX + userId, data.language);
-      return data.language;
-    }
-  } catch (error) {
-    console.warn('Unable to load account language preference:', error);
-  }
-  return fallback;
 }
 
 export async function saveUserLanguagePreference(userId: string, language: LanguageCode): Promise<void> {

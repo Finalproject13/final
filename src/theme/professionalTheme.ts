@@ -2024,7 +2024,6 @@ export const COSMIC_THEMES = {
   }
 } as const;
 export type CosmicThemeId = keyof typeof COSMIC_THEMES;
-const THEME_STORAGE_KEY = 'project-tirta-cosmic-theme-legacy';
 
 export function installProjectByTirtaTheme(): void {
   if (typeof document === 'undefined') return;
@@ -2044,7 +2043,7 @@ export function getCosmicTheme(): CosmicThemeId {
   return 'sun';
 }
 
-export function applyCosmicTheme(themeId: CosmicThemeId, persist = true): void {
+export function applyCosmicTheme(themeId: CosmicThemeId, _persist = true): void {
   if (typeof document === 'undefined') return;
   const theme = COSMIC_THEMES[themeId] ?? COSMIC_THEMES.sun;
   const root = document.documentElement;
@@ -2078,7 +2077,6 @@ export function applyCosmicTheme(themeId: CosmicThemeId, persist = true): void {
   root.style.setProperty('--app-bg', theme.base);
   root.style.setProperty('--app-surface', theme.base);
   root.style.setProperty('--app-border', theme.accent);
-  if (persist) localStorage.setItem(THEME_STORAGE_KEY, themeId);
   window.dispatchEvent(new CustomEvent('project-tirta-theme-change', { detail: themeId }));
 }
 
