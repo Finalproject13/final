@@ -1,0 +1,372 @@
+/* PROJECT BY TIRTA — LOADING POSITION / SIZE V57.13 */
+
+/* =========================================================
+   REMOVE THE VERTICAL GOLD LINE ONLY DURING LOADING
+   ========================================================= */
+html:has(.app-loading-screen),
+body:has(.app-loading-screen),
+#root:has(.app-loading-screen),
+html:has(.employee-loading-screen),
+body:has(.employee-loading-screen),
+#root:has(.employee-loading-screen),
+html:has(.login-wrap .loading),
+body:has(.login-wrap .loading),
+#root:has(.login-wrap .loading) {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+html:has(.app-loading-screen)::before,
+html:has(.app-loading-screen)::after,
+body:has(.app-loading-screen)::before,
+body:has(.app-loading-screen)::after,
+#root:has(.app-loading-screen)::before,
+#root:has(.app-loading-screen)::after,
+html:has(.employee-loading-screen)::before,
+html:has(.employee-loading-screen)::after,
+body:has(.employee-loading-screen)::before,
+body:has(.employee-loading-screen)::after,
+#root:has(.employee-loading-screen)::before,
+#root:has(.employee-loading-screen)::after,
+html:has(.login-wrap .loading)::before,
+html:has(.login-wrap .loading)::after,
+body:has(.login-wrap .loading)::before,
+body:has(.login-wrap .loading)::after,
+#root:has(.login-wrap .loading)::before,
+#root:has(.login-wrap .loading)::after {
+  content: none !important;
+  display: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-loading-screen,
+.employee-loading-screen,
+.login-wrap:has(.loading) {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  background: #030710 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* =========================================================
+   LOGIN LOADING
+   Sedikit lebih besar: 88px
+   Tepat di tengah.
+   ========================================================= */
+.login-wrap:has(.loading) .login-card,
+.login-wrap:has(.loading) .loading {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.login-wrap:has(.loading) .login-card .loading {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 88px !important;
+  height: 88px !important;
+  min-width: 88px !important;
+  min-height: 88px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  display: block !important;
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+.login-wrap:has(.loading) .login-card .loading::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 88px !important;
+  height: 88px !important;
+  margin: 0 !important;
+  background: var(--pt-company-logo) center / contain no-repeat !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 0 13px rgba(214,174,88,.34)) !important;
+  animation: tirta-login-logo-v5713 1.7s ease-in-out infinite !important;
+}
+
+/* =========================================================
+   REFRESH / APP LOADING
+   Lebih kecil: 54px
+   ========================================================= */
+.app-loading-logo-only,
+.app-loading-brand img,
+.employee-loading-logo img {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  max-width: 54px !important;
+  max-height: 54px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  display: block !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 0 10px rgba(214,174,88,.30)) !important;
+  animation: tirta-refresh-logo-v5713 1.6s ease-in-out infinite !important;
+}
+
+/* elemen pembungkus lama tidak boleh membuat garis/card */
+.app-loading-card,
+.employee-loading-card,
+.app-loading-brand,
+.employee-loading-logo {
+  position: static !important;
+  display: contents !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-loading-copy,
+.employee-loading-copy,
+.app-loading-indicator,
+.employee-loading-bar,
+.employee-loading-skeletons {
+  display: none !important;
+}
+
+@keyframes tirta-login-logo-v5713 {
+  0%, 100% { scale: .94; opacity: .76; }
+  50% { scale: 1.05; opacity: 1; }
+}
+
+@keyframes tirta-refresh-logo-v5713 {
+  0%, 100% { scale: .94; opacity: .70; }
+  50% { scale: 1.06; opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .login-wrap:has(.loading) .login-card .loading,
+  .login-wrap:has(.loading) .login-card .loading::before {
+    width: 84px !important;
+    height: 84px !important;
+    min-width: 84px !important;
+    min-height: 84px !important;
+  }
+
+  .app-loading-logo-only,
+  .app-loading-brand img,
+  .employee-loading-logo img {
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    min-height: 52px !important;
+  }
+}
+
+/* =========================================================
+   FINAL LOADING SIZE + CENTER V57.14
+   Login = 88px
+   Refresh/App = 54px
+   No card / no gold vertical line
+   ========================================================= */
+
+/* Any active loading state: root becomes dark and loses borders/lines. */
+html:has([class*="loading"]),
+body:has([class*="loading"]),
+#root:has([class*="loading"]) {
+  background: #030710 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+html:has([class*="loading"])::before,
+html:has([class*="loading"])::after,
+body:has([class*="loading"])::before,
+body:has([class*="loading"])::after,
+#root:has([class*="loading"])::before,
+#root:has([class*="loading"])::after {
+  display: none !important;
+  content: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+
+/* Full screen loading surfaces */
+[class*="loading-screen"] {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  background: #030710 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Remove every loading card/frame. */
+[class*="loading-card"],
+[class*="loading-panel"],
+[class*="loading-box"] {
+  display: contents !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* LOGIN LOADING — 88px, true center. */
+.login-wrap:has(.loading),
+.login-wrap:has(.loading) .login-card {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  background: #030710 !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.login-wrap:has(.loading) .loading,
+.login-wrap:has(.loading) .loading::before,
+.login-wrap:has(.loading) .login-loading-logo {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 88px !important;
+  height: 88px !important;
+  min-width: 88px !important;
+  min-height: 88px !important;
+  max-width: 88px !important;
+  max-height: 88px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  object-fit: contain !important;
+}
+
+.login-wrap:has(.loading) .loading {
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.login-wrap:has(.loading) .loading::before {
+  content: "" !important;
+  display: block !important;
+  background: var(--pt-company-logo) center / contain no-repeat !important;
+  filter: drop-shadow(0 0 14px rgba(214,174,88,.36)) !important;
+  animation: tirta-login-loading-final-v5714 1.7s ease-in-out infinite !important;
+}
+
+/* REFRESH / INITIAL APP LOADING — 54px, true center. */
+.app-loading-screen .app-loading-logo,
+.app-loading-screen .app-loading-logo-only,
+.app-loading-screen .app-loading-brand img,
+.employee-loading-screen .app-loading-logo,
+.employee-loading-screen .app-loading-logo-only,
+.employee-loading-screen .employee-loading-logo img,
+[class*="app-loading"] img,
+[class*="employee-loading"] img {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  max-width: 54px !important;
+  max-height: 54px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: translate(-50%, -50%) !important;
+  display: block !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 0 10px rgba(214,174,88,.30)) !important;
+  animation: tirta-refresh-loading-final-v5714 1.6s ease-in-out infinite !important;
+}
+
+[class*="app-loading"] .app-loading-copy,
+[class*="employee-loading"] .employee-loading-copy,
+[class*="app-loading"] .app-loading-indicator,
+[class*="employee-loading"] .employee-loading-bar,
+[class*="employee-loading"] .employee-loading-skeletons {
+  display: none !important;
+}
+
+/* Kill any remaining vertical/horizontal line on loading surfaces. */
+[class*="loading-screen"] *,
+.login-wrap:has(.loading) * {
+  border-left-color: transparent !important;
+  border-right-color: transparent !important;
+  outline: 0 !important;
+}
+
+.login-wrap:has(.loading) .loading,
+.login-wrap:has(.loading) .loading::before {
+  border-left: 0 !important;
+  border-right: 0 !important;
+}
+
+@keyframes tirta-login-loading-final-v5714 {
+  0%, 100% { scale: .94; opacity: .74; }
+  50% { scale: 1.06; opacity: 1; }
+}
+
+@keyframes tirta-refresh-loading-final-v5714 {
+  0%, 100% { scale: .94; opacity: .70; }
+  50% { scale: 1.06; opacity: 1; }
+}

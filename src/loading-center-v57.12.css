@@ -1,0 +1,138 @@
+/* PROJECT BY TIRTA — LOADING TRUE CENTER V57.12 */
+
+html:has(.app-loading-screen),
+body:has(.app-loading-screen),
+#root:has(.app-loading-screen),
+html:has(.employee-loading-screen),
+body:has(.employee-loading-screen),
+#root:has(.employee-loading-screen),
+html:has(.login-wrap .loading),
+body:has(.login-wrap .loading),
+#root:has(.login-wrap .loading) {
+  background: #030710 !important;
+}
+
+.app-loading-screen,
+.employee-loading-screen,
+.login-wrap:has(.loading) {
+  position: fixed !important;
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  display: block !important;
+  background: #030710 !important;
+}
+
+/* Hapus semua layout penggeser dari wrapper/card lama */
+.app-loading-card,
+.employee-loading-card,
+.login-wrap:has(.loading) .login-card,
+.app-loading-brand,
+.employee-loading-logo {
+  position: static !important;
+  display: contents !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Logo benar-benar terkunci di titik 50% x 50% */
+.app-loading-logo-only,
+.employee-loading-logo-only,
+.app-loading-brand img,
+.employee-loading-logo img {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 78px !important;
+  height: 78px !important;
+  min-width: 78px !important;
+  min-height: 78px !important;
+  max-width: 78px !important;
+  max-height: 78px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  transform: translate(-50%, -50%) !important;
+  filter: drop-shadow(0 0 14px rgba(214,174,88,.38)) !important;
+  animation: tirta-loading-center-pulse-v5712 1.7s ease-in-out infinite !important;
+}
+
+/* Animasi memakai scale property supaya tidak mengubah translate pusat */
+@keyframes tirta-loading-center-pulse-v5712 {
+  0%, 100% {
+    scale: .92;
+    opacity: .72;
+  }
+  50% {
+    scale: 1.08;
+    opacity: 1;
+  }
+}
+
+/* Loading sesi lama: pseudo-logo juga tepat di tengah */
+.login-wrap:has(.loading) .login-card .loading {
+  position: static !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: block !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.login-wrap:has(.loading) .login-card .loading::before {
+  content: "" !important;
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 78px !important;
+  height: 78px !important;
+  margin: 0 !important;
+  display: block !important;
+  background-image: var(--pt-company-logo) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
+  transform: translate(-50%, -50%) !important;
+  filter: drop-shadow(0 0 14px rgba(214,174,88,.38)) !important;
+  animation: tirta-loading-center-pulse-v5712 1.7s ease-in-out infinite !important;
+}
+
+/* Sembunyikan elemen lama yang dapat menarik logo ke bawah */
+.app-loading-copy,
+.employee-loading-copy,
+.app-loading-indicator,
+.employee-loading-bar,
+.employee-loading-skeletons {
+  display: none !important;
+}

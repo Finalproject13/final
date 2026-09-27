@@ -154,6 +154,435 @@ export default function App() {
   useEffect(() => {
     initializeCosmicTheme();
   }, []);
+
+  /* TIRTA LOADING ROOT V57.8 */
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const styleId = "tirta-loading-root-v57-8";
+    if (document.getElementById(styleId)) return;
+
+    const style = document.createElement("style");
+    style.id = styleId;
+    style.textContent = `
+      /* ==================================================
+         FULL SCREEN LOADING
+         Tidak boleh ada background putih
+         ================================================== */
+
+      html:has(.app-loading-screen),
+      body:has(.app-loading-screen),
+      #root:has(.app-loading-screen),
+      html:has(.employee-loading-screen),
+      body:has(.employee-loading-screen),
+      #root:has(.employee-loading-screen),
+      html:has(.login-wrap .loading),
+      body:has(.login-wrap .loading),
+      #root:has(.login-wrap .loading) {
+        background: #030710 !important;
+      }
+
+      .app-loading-screen,
+      .employee-loading-screen,
+      .login-wrap:has(.loading) {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        display: grid !important;
+        place-items: center !important;
+        overflow: hidden !important;
+        background:
+          radial-gradient(
+            circle at 50% 50%,
+            rgba(214,174,88,.08),
+            transparent 28%
+          ),
+          #030710 !important;
+      }
+
+      /* Hilangkan seluruh card/persegi */
+      .app-loading-card,
+      .employee-loading-card,
+      .login-wrap:has(.loading) .login-card {
+        width: auto !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+      }
+
+      /* Logo saja */
+      .app-loading-brand,
+      .employee-loading-logo {
+        width: auto !important;
+        height: auto !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .app-loading-brand img,
+      .employee-loading-logo img,
+      .app-loading-logo {
+        width: 78px !important;
+        height: 78px !important;
+        display: block !important;
+        object-fit: contain !important;
+        background: transparent !important;
+        border: 0 !important;
+        animation: tirta-loading-logo 1.7s ease-in-out infinite !important;
+        filter:
+          drop-shadow(0 0 8px rgba(214,174,88,.25))
+          drop-shadow(0 0 18px rgba(214,174,88,.18)) !important;
+      }
+
+      /* Hilangkan teks/loading bar/skeleton */
+      .app-loading-copy,
+      .employee-loading-copy,
+      .app-loading-indicator,
+      .employee-loading-bar,
+      .employee-loading-skeletons,
+      .app-loading-indicator i,
+      .employee-loading-bar i,
+      .employee-loading-skeletons i {
+        display: none !important;
+      }
+
+      /* Session loading lama */
+      .login-wrap:has(.loading) .login-card .loading {
+        width: auto !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        display: block !important;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+        color: transparent !important;
+        font-size: 0 !important;
+      }
+
+      .login-wrap:has(.loading) .login-card .loading::before {
+        content: "" !important;
+        width: 78px !important;
+        height: 78px !important;
+        display: block !important;
+        margin: 0 !important;
+        background-image: var(--pt-company-logo) !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: contain !important;
+        filter:
+          drop-shadow(0 0 8px rgba(214,174,88,.25))
+          drop-shadow(0 0 18px rgba(214,174,88,.18)) !important;
+        animation: tirta-loading-logo 1.7s ease-in-out infinite !important;
+      }
+
+      @keyframes tirta-loading-logo {
+        0%, 100% {
+          transform: scale(.92);
+          opacity: .72;
+        }
+        50% {
+          transform: scale(1.08);
+          opacity: 1;
+        }
+      }
+    `;
+
+    document.head.appendChild(style);
+
+    return () => {
+      style.remove();
+    };
+  }, []);
+
+  /* TIRTA UNIVERSAL LOADING V57.6 */
+  useEffect(() => {
+    document.documentElement.style.setProperty('--pt-company-logo', `url("${moonLogo}")`);
+
+    const style = document.createElement('style');
+    style.id = 'tirta-universal-loading-v57-6';
+    style.textContent = `
+      /* =====================================================
+         PROJECT BY TIRTA — UNIVERSAL LOADING
+         Semua loading memakai logo perusahaan.
+         ===================================================== */
+
+      .app-loading-screen,
+      .employee-loading-screen {
+        min-height: 100dvh !important;
+        width: 100% !important;
+        display: grid !important;
+        place-items: center !important;
+        padding: 20px !important;
+        box-sizing: border-box !important;
+        background:
+          radial-gradient(circle at 50% 40%, rgba(214,174,88,.12), transparent 30%),
+          linear-gradient(180deg, #071126 0%, #030710 100%) !important;
+      }
+
+      .app-loading-card,
+      .employee-loading-card {
+        width: min(390px, calc(100vw - 32px)) !important;
+        max-width: 390px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 10px !important;
+        padding: 24px !important;
+        box-sizing: border-box !important;
+        background: #0d172b !important;
+        border: 1px solid #d6ae58 !important;
+        border-radius: 20px !important;
+        color: #e8edf5 !important;
+        box-shadow: 0 20px 60px rgba(0,0,0,.38), 0 0 30px rgba(214,174,88,.10) !important;
+      }
+
+      .app-loading-brand,
+      .employee-loading-logo {
+        width: 78px !important;
+        height: 78px !important;
+        min-width: 78px !important;
+        display: grid !important;
+        place-items: center !important;
+        box-sizing: border-box !important;
+        border-radius: 22px !important;
+        background: #101827 !important;
+        border: 1px solid #d6ae58 !important;
+        box-shadow: 0 0 30px rgba(214,174,88,.18) !important;
+        animation: tirta-logo-loading-pulse 1.8s ease-in-out infinite !important;
+      }
+
+      .app-loading-brand img,
+      .employee-loading-logo img {
+        width: 52px !important;
+        height: 52px !important;
+        object-fit: contain !important;
+      }
+
+      .app-loading-copy,
+      .employee-loading-copy {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 4px !important;
+      }
+
+      .app-loading-copy strong,
+      .employee-loading-copy strong {
+        color: #f4f7fb !important;
+        font-size: 14px !important;
+      }
+
+      .app-loading-copy span,
+      .employee-loading-copy span {
+        color: #aeb9c9 !important;
+        font-size: 10px !important;
+      }
+
+      .app-loading-indicator,
+      .employee-loading-bar {
+        width: 54px !important;
+        height: 4px !important;
+        margin-top: 5px !important;
+        border-radius: 999px !important;
+        overflow: hidden !important;
+        background: rgba(151,179,224,.12) !important;
+      }
+
+      .app-loading-indicator i,
+      .employee-loading-bar i {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, #d6ae58, #f0d68c, transparent) !important;
+        animation: tirta-loading-line 1.4s ease-in-out infinite !important;
+      }
+
+      .employee-loading-skeletons {
+        width: min(250px, 100%) !important;
+        display: grid !important;
+        gap: 6px !important;
+        margin-top: 3px !important;
+      }
+
+      .employee-loading-skeletons i {
+        min-height: 8px !important;
+        display: block !important;
+        border-radius: 999px !important;
+        background: linear-gradient(90deg, #111b33 25%, #172744 50%, #111b33 75%) !important;
+        background-size: 200% 100% !important;
+        animation: tirta-skeleton-slide 1.5s linear infinite !important;
+        border: 1px solid rgba(214,174,88,.10) !important;
+      }
+
+      /* Loading inline pada modul/tabel */
+      .loading,
+      .unified-loading {
+        position: relative !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        min-height: 34px !important;
+        padding: 7px 12px !important;
+        box-sizing: border-box !important;
+        border: 1px solid rgba(214,174,88,.30) !important;
+        border-radius: 10px !important;
+        background: #101827 !important;
+        color: #dfe7f7 !important;
+        font-size: 11px !important;
+        font-weight: 650 !important;
+      }
+
+      .loading::before,
+      .unified-loading::before {
+        content: "" !important;
+        width: 23px !important;
+        height: 23px !important;
+        min-width: 23px !important;
+        display: block !important;
+        background-image: var(--pt-company-logo) !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: contain !important;
+        filter: drop-shadow(0 0 6px rgba(214,174,88,.28)) !important;
+        animation: tirta-logo-loading-pulse 1.8s ease-in-out infinite !important;
+      }
+
+      /* Session check pada login lama */
+      .login-wrap:has(.login-card .loading) .login-card {
+        background: #0d172b !important;
+        border: 1px solid #d6ae58 !important;
+        color: #e8edf5 !important;
+      }
+
+      .login-wrap:has(.login-card .loading) .loading {
+        width: 100% !important;
+      }
+
+      /* Tombol login saat sedang memverifikasi */
+      .unified-login-button:disabled {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        background: #111b33 !important;
+        color: #f4f7fb !important;
+        border: 1px solid #d6ae58 !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+
+      .unified-login-button:disabled::before {
+        content: "" !important;
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px !important;
+        display: block !important;
+        background-image: var(--pt-company-logo) !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: contain !important;
+        filter: drop-shadow(0 0 5px rgba(214,174,88,.35)) !important;
+        animation: tirta-logo-loading-pulse 1.5s ease-in-out infinite !important;
+      }
+
+      /* Verifikasi ID */
+      .verify-id-loading {
+        min-height: 58px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .verify-id-loading span {
+        display: none !important;
+      }
+
+      .verify-id-loading::before {
+        content: "" !important;
+        width: 46px !important;
+        height: 46px !important;
+        display: block !important;
+        background-image: var(--pt-company-logo) !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        background-size: contain !important;
+        filter: drop-shadow(0 0 10px rgba(214,174,88,.28)) !important;
+        animation: tirta-logo-loading-pulse 1.7s ease-in-out infinite !important;
+      }
+
+      .verify-id-card:has(.verify-id-loading) {
+        border-color: rgba(214,174,88,.42) !important;
+        background: #0d172b !important;
+      }
+
+      @keyframes tirta-logo-loading-pulse {
+        0%, 100% { transform: scale(.92); opacity: .72; }
+        50% { transform: scale(1.06); opacity: 1; }
+      }
+
+      @keyframes tirta-loading-line {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+
+      @keyframes tirta-skeleton-slide {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
+      @media (max-width: 600px) {
+        .app-loading-card,
+        .employee-loading-card {
+          width: calc(100vw - 24px) !important;
+          padding: 20px !important;
+          border-radius: 16px !important;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .app-loading-brand,
+        .employee-loading-logo,
+        .loading::before,
+        .unified-loading::before,
+        .unified-login-button:disabled::before,
+        .verify-id-loading::before,
+        .app-loading-indicator i,
+        .employee-loading-bar i,
+        .employee-loading-skeletons i {
+          animation: none !important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      style.remove();
+      document.documentElement.style.removeProperty('--pt-company-logo');
+    };
+  }, []);
+
   const [view, setView] = useState<View>('home');
   const [loginOpen, setLoginOpen] = useState(false);
 
@@ -499,22 +928,57 @@ export default function App() {
 }
 
 
-function AppLoadingScreen({ message }: { message: string }) {
+function AppLoadingScreen({ message: _message }: { message: string }) {
   return (
-    <main className="app-loading-screen" role="status" aria-live="polite">
-      <div className="app-loading-card">
-        <div className="app-loading-brand">
-          <img src={moonLogo} alt="Project by Tirta" />
-        </div>
-        <div className="app-loading-copy">
-          <strong>Project by Tirta</strong>
-          <span>{message}</span>
-        </div>
-        <div className="app-loading-indicator" aria-hidden="true">
-          <i /><i /><i />
-        </div>
-      </div>
-    </main>
+    <>
+      <style>{`
+        @keyframes tirtaTrueCenterLoadingV5715 {
+          0%, 100% { scale: .94; opacity: .72; }
+          50% { scale: 1.06; opacity: 1; }
+        }
+      `}</style>
+      <main
+        aria-label="Loading"
+        role="status"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          width: '100vw',
+          height: '100dvh',
+          minHeight: '100dvh',
+          margin: 0,
+          padding: 0,
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#030710',
+          zIndex: 2147483647,
+        }}
+      >
+        <img
+          src={moonLogo}
+          alt="Project by Tirta"
+          style={{
+            position: 'fixed',
+            left: '50%',
+            top: '50%',
+            width: '62px',
+            height: '62px',
+            margin: 0,
+            padding: 0,
+            display: 'block',
+            objectFit: 'contain',
+            transform: 'translate(-50%, -50%)',
+            background: 'transparent',
+            border: 0,
+            boxShadow: 'none',
+            filter: 'drop-shadow(0 0 12px rgba(214,174,88,.34))',
+            animation: 'tirtaTrueCenterLoadingV5715 1.7s ease-in-out infinite',
+          }}
+        />
+      </main>
+    </>
   );
 }
 
@@ -748,9 +1212,14 @@ function LoginScreen({
             className="unified-login-button"
             disabled={loading}
           >
-            {loading
-              ? t('verifying')
-              : t('system_login')}
+            {loading ? (
+              <span className="login-loading-content">
+                <img src={moonLogo} alt="" className="login-loading-logo" />
+                <span>{t('verifying')}</span>
+              </span>
+            ) : (
+              t('system_login')
+            )}
           </button>
 
         </form>

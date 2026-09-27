@@ -1,3 +1,6 @@
+import './loading-real-final-v57.15';
+import './loading-position-v57.13.css';
+import './loading-center-v57.12.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
