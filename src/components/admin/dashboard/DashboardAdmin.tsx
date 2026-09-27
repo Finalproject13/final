@@ -1049,6 +1049,90 @@ export default function DashboardAdmin() {
   return (
    <div className="talenta-shell">
 
+
+
+
+
+    <aside className={`sidebar ${sidebar ? "open" : "collapsed"}`}>
+      <div className="sidebar-head">
+        <div className="brand">
+          <div className="brand-mark"><img src={moonLogo} alt="Project by Tirta" /></div>
+          {sidebar && <div><b>Project by Tirta</b><small>People Platform</small></div>}
+        </div>
+      </div>
+
+      <nav className="sidebar-nav" aria-label="Menu utama">
+  {visibleMenuGroups.map((group) => {
+    const visibleItems = group.items.filter((item) =>
+      menuPermissionForRole(item[0], userRole, dbPerms)
+    );
+
+    if (!visibleItems.length) return null;
+return (
+            <div className="nav-group" key={group.title}>
+              {sidebar && (
+                <button
+                  type="button"
+                  className="nav-title"
+                  onClick={() =>
+                    setCollapsedGroups((prev) => ({
+                      ...prev,
+                      [group.title]: !prev[group.title],
+                    }))
+                  }
+                  aria-expanded={!collapsedGroups[group.title]}
+                >
+                  <span>{group.title}</span>
+                  <Icon
+                    name={collapsedGroups[group.title] ? 'chevronRight' : 'chevronDown'}
+                  />
+                </button>
+              )}
+
+              {!collapsedGroups[group.title] && (
+                <div className="nav-group-items">
+                  {visibleItems.map(([key, label, icon]) => (
+                    <button
+                      key={key}
+                      className={`nav-item ${menu === key ? 'active' : ''}`}
+                      onClick={() => navigate(key)}
+                      title={!sidebar ? label : undefined}
+                      type="button"
+                    >
+                      <Icon name={icon} />
+                      {sidebar && <span>{label}</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+
+
+      {/* ===== BAGIAN BAWAH SIDEBAR ===== */}
+      <div className="sidebar-bottom">
+        <button className="logout" onClick={async () => {
+          await signOut();
+          setLogged(false);
+          setUserRole("");
+          setDbPerms([]);
+          setMenu("overview");
+          location.hash = "/home";
+        }}>
+          <Icon name="logout"/>{sidebar && "Keluar"}
+        </button>
+      </div>
+      {/* ======================================================== */}
+    </aside>
+   <main className="talenta-main"><header className="topbar">
+<div className="topbar-left"><button className="icon-btn" aria-label="Buka menu" onClick={()=>setSidebar(v=>!v)}><Icon name="menu"/></button>
+<div className="crumb"><span>Project by Tirta</span><b>/</b>{activeLabel}</div>
+</div>
+  {roleOpen && <div className="role-menu"><small>ROLE AKTIF</small>{['Super Admin','Admin','HRD','Payroll','Supervisor','Karyawan'].map(r=><button type="button" key={r} className={r===userRole?'selected':''} onClick={()=>{setRoleOpen(false); if(r!==userRole)setToast(`Role ${r} hanya dapat diubah melalui Peran & Hak Akses.`)}}>{r===userRole?'✓':' '} {r}</button>)}</div>}
+<div className="search-global"><span><Icon name="search"/></span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('search_data')}/></div><div className="top-actions">
     {/* FLOATING_NOTIFICATION_GROUP_START */}
     <div className="admin-floating-notification-group" aria-label="Pusat notifikasi">
       <button
@@ -1235,89 +1319,7 @@ export default function DashboardAdmin() {
       )}
     </div>
     {/* FLOATING_NOTIFICATION_GROUP_END */}
-
-
-
-    <aside className={`sidebar ${sidebar ? "open" : "collapsed"}`}>
-      <div className="sidebar-head">
-        <div className="brand">
-          <div className="brand-mark"><img src={moonLogo} alt="Project by Tirta" /></div>
-          {sidebar && <div><b>Project by Tirta</b><small>People Platform</small></div>}
-        </div>
-      </div>
-
-      <nav className="sidebar-nav" aria-label="Menu utama">
-  {visibleMenuGroups.map((group) => {
-    const visibleItems = group.items.filter((item) =>
-      menuPermissionForRole(item[0], userRole, dbPerms)
-    );
-
-    if (!visibleItems.length) return null;
-return (
-            <div className="nav-group" key={group.title}>
-              {sidebar && (
-                <button
-                  type="button"
-                  className="nav-title"
-                  onClick={() =>
-                    setCollapsedGroups((prev) => ({
-                      ...prev,
-                      [group.title]: !prev[group.title],
-                    }))
-                  }
-                  aria-expanded={!collapsedGroups[group.title]}
-                >
-                  <span>{group.title}</span>
-                  <Icon
-                    name={collapsedGroups[group.title] ? 'chevronRight' : 'chevronDown'}
-                  />
-                </button>
-              )}
-
-              {!collapsedGroups[group.title] && (
-                <div className="nav-group-items">
-                  {visibleItems.map(([key, label, icon]) => (
-                    <button
-                      key={key}
-                      className={`nav-item ${menu === key ? 'active' : ''}`}
-                      onClick={() => navigate(key)}
-                      title={!sidebar ? label : undefined}
-                      type="button"
-                    >
-                      <Icon name={icon} />
-                      {sidebar && <span>{label}</span>}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </nav>
-
-     
-      
-      {/* ===== BAGIAN BAWAH SIDEBAR ===== */}
-      <div className="sidebar-bottom">
-        <button className="logout" onClick={async () => {
-          await signOut();
-          setLogged(false);
-          setUserRole("");
-          setDbPerms([]);
-          setMenu("overview");
-          location.hash = "/home";
-        }}>
-          <Icon name="logout"/>{sidebar && "Keluar"}
-        </button>
-      </div>
-      {/* ======================================================== */}
-    </aside>
-   <main className="talenta-main"><header className="topbar">
-<div className="topbar-left"><button className="icon-btn" aria-label="Buka menu" onClick={()=>setSidebar(v=>!v)}><Icon name="menu"/></button>
-<div className="crumb"><span>Project by Tirta</span><b>/</b>{activeLabel}</div>
-</div>
-  {roleOpen && <div className="role-menu"><small>ROLE AKTIF</small>{['Super Admin','Admin','HRD','Payroll','Supervisor','Karyawan'].map(r=><button type="button" key={r} className={r===userRole?'selected':''} onClick={()=>{setRoleOpen(false); if(r!==userRole)setToast(`Role ${r} hanya dapat diubah melalui Peran & Hak Akses.`)}}>{r===userRole?'✓':' '} {r}</button>)}</div>}
-<div className="search-global"><span><Icon name="search"/></span><input value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('search_data')}/></div><div className="top-actions"><ThemeControl userRole={userRole} /><button className="icon-btn" aria-label="Muat ulang" onClick={()=>refresh()}><Icon name="refresh"/></button><div className="profile-trigger-wrap"><button type="button" className="avatar avatar-button" aria-label={t('open_profile')} aria-expanded={profileOpen} onClick={()=>setProfileOpen(v=>!v)}>{profilePhotoUrl ? <img src={profilePhotoUrl} alt={t('profile')} /> : (profileName || "HR").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}</button>{profileOpen && <div className="profile-menu"><div className="profile-menu-header"><div className="profile-avatar-large">{(profileName || "HR").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}</div><div><strong>{profileName || email || "Pengguna"}</strong><small>{userRole || "Pengguna"}</small></div></div><div className="profile-menu-divider"/><button type="button" onClick={()=>{setProfileOpen(false);setProfilePanelOpen(true)}}><span>👤</span>{t('profile')}</button><button type="button" onClick={()=>{setProfileOpen(false);navigate("roles")}}><span>🛡️</span>{t('role')}</button><div className="profile-language">
+<ThemeControl userRole={userRole} /><button className="icon-btn" aria-label="Muat ulang" onClick={()=>refresh()}><Icon name="refresh"/></button><div className="profile-trigger-wrap"><button type="button" className="avatar avatar-button" aria-label={t('open_profile')} aria-expanded={profileOpen} onClick={()=>setProfileOpen(v=>!v)}>{profilePhotoUrl ? <img src={profilePhotoUrl} alt={t('profile')} /> : (profileName || "HR").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}</button>{profileOpen && <div className="profile-menu"><div className="profile-menu-header"><div className="profile-avatar-large">{(profileName || "HR").split(" ").map(x=>x[0]).join("").slice(0,2).toUpperCase()}</div><div><strong>{profileName || email || "Pengguna"}</strong><small>{userRole || "Pengguna"}</small></div></div><div className="profile-menu-divider"/><button type="button" onClick={()=>{setProfileOpen(false);setProfilePanelOpen(true)}}><span>👤</span>{t('profile')}</button><button type="button" onClick={()=>{setProfileOpen(false);navigate("roles")}}><span>🛡️</span>{t('role')}</button><div className="profile-language">
   <button type="button" onClick={()=>setLanguageOpen(v=>!v)}><span>🌐</span>{t('language')} <small>{lang.toUpperCase()} ▾</small></button>
   {languageOpen && <div className="profile-language-options">
     {([['id','Indonesia'],['en','English'],['ja','日本語'],['ko','한국어'],['zh','中文']] as const).map(([code,name])=>

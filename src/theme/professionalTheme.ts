@@ -1984,6 +1984,237 @@ html[data-cosmic-theme="nebula"] .talenta-shell .talenta-sidebar {
 .theme-control .cosmic-theme-blackhole { background: linear-gradient(135deg,#050608,#63d7ff); }
 .theme-control .cosmic-theme-nebula { background: linear-gradient(135deg,#ffbfe8,#71d5ff); }
 
+
+/* TIRTA_FINAL_UI_FIX_V2 */
+/* =========================================================
+   LOGIN — tombol Login tetap dapat dijangkau pada viewport pendek
+   ========================================================= */
+.unified-login-page.modal-overlay {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  padding: 12px !important;
+  min-height: 100vh !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+}
+
+.unified-login-page.modal-overlay .login-modal-card {
+  width: min(460px, calc(100vw - 24px)) !important;
+  max-width: 100% !important;
+  max-height: calc(100vh - 24px) !important;
+  max-height: calc(100dvh - 24px) !important;
+  margin: auto !important;
+  flex: 0 0 auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.unified-login-page .unified-login-form {
+  min-height: 0 !important;
+  gap: 14px !important;
+}
+
+.unified-login-page .unified-login-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  flex: 0 0 auto !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 5 !important;
+  color: #08111d !important;
+  background: linear-gradient(135deg, var(--pt-accent), color-mix(in srgb, var(--pt-accent) 62%, #fff 38%)) !important;
+  border: 1px solid color-mix(in srgb, var(--pt-accent) 72%, #fff 28%) !important;
+}
+
+/* Pada layar laptop pendek, rapatkan jarak agar CTA Login lebih cepat terlihat. */
+@media (max-height: 760px) {
+  .unified-login-page.modal-overlay {
+    padding: 8px !important;
+  }
+
+  .unified-login-page.modal-overlay .login-modal-card {
+    max-height: calc(100vh - 16px) !important;
+    max-height: calc(100dvh - 16px) !important;
+  }
+
+  .unified-login-page .unified-brand {
+    margin-bottom: 22px !important;
+  }
+
+  .unified-login-page .unified-login-heading {
+    margin-bottom: 18px !important;
+  }
+
+  .unified-login-page .unified-login-register {
+    margin-top: 14px !important;
+  }
+
+  .unified-login-page .unified-login-security {
+    margin-top: 16px !important;
+  }
+}
+
+/* =========================================================
+   HEADER — notifikasi tidak boleh menimpa tema/refresh/profil
+   ========================================================= */
+.topbar .top-actions {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+  flex-wrap: nowrap !important;
+}
+
+.topbar .top-actions > .admin-floating-notification-group {
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  z-index: 40 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.topbar .top-actions > .admin-floating-notification-group .admin-floating-action {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  flex: 0 0 32px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-radius: 50% !important;
+  position: relative !important;
+}
+
+.topbar .top-actions > .admin-floating-notification-group .admin-floating-action-icon {
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+
+.topbar .top-actions > .admin-floating-notification-group .admin-floating-action-badge {
+  top: -3px !important;
+  right: -3px !important;
+  min-width: 15px !important;
+  height: 15px !important;
+  padding: 0 3px !important;
+  line-height: 15px !important;
+  font-size: 9px !important;
+}
+
+.topbar .top-actions > .admin-floating-notification-group .admin-notification-dropdown {
+  top: calc(100% + 10px) !important;
+  right: 0 !important;
+  left: auto !important;
+  z-index: 250 !important;
+}
+
+/* Mencegah icon tema dan profil ikut saling tindih saat lebar layar sempit. */
+.topbar .top-actions > .theme-control,
+.topbar .top-actions > .icon-btn,
+.topbar .top-actions > .profile-trigger-wrap {
+  position: relative !important;
+  flex: 0 0 auto !important;
+}
+
+/* =========================================================
+   SIDEBAR — menu aktif selalu punya teks + icon yang terbaca
+   ========================================================= */
+.talenta-shell .sidebar .nav-item,
+.talenta-shell .talenta-sidebar .nav-item {
+  min-height: 42px !important;
+  color: #e6edf6 !important;
+  -webkit-text-fill-color: #e6edf6 !important;
+  background: transparent !important;
+  border: 2px solid transparent !important;
+  border-radius: 9px !important;
+  opacity: 1 !important;
+}
+
+.talenta-shell .sidebar .nav-item:hover,
+.talenta-shell .talenta-sidebar .nav-item:hover {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: rgba(214, 174, 88, 0.10) !important;
+  border-color: rgba(214, 174, 88, 0.65) !important;
+  opacity: 1 !important;
+}
+
+.talenta-shell .sidebar .nav-item.active,
+.talenta-shell .talenta-sidebar .nav-item.active {
+  color: #0b1222 !important;
+  -webkit-text-fill-color: #0b1222 !important;
+  background: #d6ae58 !important;
+  border: 2px solid #f0d68c !important;
+  box-shadow: 0 0 18px rgba(214, 174, 88, 0.22) !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+.talenta-shell .sidebar .nav-item.active span,
+.talenta-shell .sidebar .nav-item.active svg,
+.talenta-shell .sidebar .nav-item.active path,
+.talenta-shell .talenta-sidebar .nav-item.active span,
+.talenta-shell .talenta-sidebar .nav-item.active svg,
+.talenta-shell .talenta-sidebar .nav-item.active path {
+  color: #0b1222 !important;
+  -webkit-text-fill-color: #0b1222 !important;
+  fill: none !important;
+  stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+.talenta-shell .sidebar .nav-item.active > svg,
+.talenta-shell .talenta-sidebar .nav-item.active > svg {
+  flex: 0 0 auto !important;
+}
+
+.talenta-shell .sidebar .nav-item:focus-visible,
+.talenta-shell .talenta-sidebar .nav-item:focus-visible {
+  outline: 2px solid #f0d68c !important;
+  outline-offset: 1px !important;
+}
+
+@media (max-width: 700px) {
+  .topbar .top-actions {
+    gap: 4px !important;
+  }
+
+  .topbar .top-actions > .admin-floating-notification-group {
+    gap: 3px !important;
+  }
+
+  .topbar .top-actions > .admin-floating-notification-group .admin-floating-action {
+    width: 30px !important;
+    height: 30px !important;
+    min-width: 30px !important;
+    min-height: 30px !important;
+    flex-basis: 30px !important;
+  }
+}
+
 `;
 
 export const COSMIC_THEMES = {
