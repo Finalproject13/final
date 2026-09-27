@@ -2576,6 +2576,63 @@ html[data-cosmic-theme="nebula"] .talenta-shell .talenta-sidebar {
   border-bottom: 1px solid rgba(214,174,88,.18) !important;
 }
 
+
+/* FINAL BORDER COLOR FIX V57.2 */
+.sidebar-bottom,
+.topbar,
+.employee-topbar,
+.public-header {
+  border-color: rgba(214,174,88,.42) !important;
+}
+
+.table-wrap,
+.employee-tabs,
+.cosmic-theme-dock,
+.cosmic-theme-global-dock {
+  border-color: rgba(214,174,88,.38) !important;
+}
+
+table th {
+  border-bottom-color: rgba(214,174,88,.38) !important;
+}
+
+table td {
+  border-bottom-color: rgba(214,174,88,.16) !important;
+}
+
+.stat-card,
+.panel,
+.quick,
+.form-panel,
+.report-card,
+.org-card,
+.calendar-card,
+.feature-card,
+.setting-card,
+.info-box,
+.portal-card,
+.employee-login-card,
+.theme-card,
+.custom-theme-panel,
+.export-card,
+.detail-panel,
+.table-card {
+  border-color: rgba(214,174,88,.42) !important;
+}
+
+.secondary,
+.portal-secondary,
+.public-secondary {
+  border-color: rgba(214,174,88,.38) !important;
+}
+
+.search-global,
+.icon-btn,
+.cosmic-theme-dock button,
+.cosmic-theme-global-dock button {
+  border-color: rgba(214,174,88,.30) !important;
+}
+
 `;
 
 export const COSMIC_THEMES = {
